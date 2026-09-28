@@ -11,57 +11,96 @@ main{padding:20px 20px 90px}
 .card{background:#fff;padding:15px;border-radius:12px;margin-bottom:10px}
 nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px}
 button{padding:8px;border-radius:8px}
+.ok{color:green}.err{color:red}
 </style>
 </head>
 <body>
 <header><h1>🥷 Kanaloa KIDS</h1></header>
-<main id="app"></main>
+<main id="app">Cargando...</main>
 <nav>
 <button onclick="home()">🏠 Inicio</button>
 <button onclick="studentsPage()">👥 Alumnos</button>
 <button onclick="listPage()">📋 Lista</button>
 <button onclick="historyPage()">📚 Historial</button>
 </nav>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
 let db,students=[];
+
 async function init(){
  db=supabase.createClient(window.KIDS_SUPABASE_URL,window.KIDS_SUPABASE_KEY);
- await load();
+ await loadStudents();
  home();
 }
-async function load(){
- let r=await db.from("students").select("*").order("name");
- students=r.data||[];
+
+async function loadStudents(){
+ let {data,error}=await db.from("students").select("*").order("name");
+ if(error){showError(error.message); return;}
+ students=data||[];
 }
+
 function home(){
  app.innerHTML=`<div class="card"><h2>Inicio</h2><p>Alumnos KIDS: ${students.length}</p></div>`;
 }
+
 function studentsPage(){
- app.innerHTML=`<div class="card"><h2>Alumnos</h2><button onclick="add()">+ Añadir</button>
- ${students.map(s=>`<p>${s.name}</p>`).join("")}</div>`;
+ app.innerHTML=`<div class="card"><h2>Alumnos</h2>
+<button onclick="addStudent()">+ Añadir</button>
+${students.map(s=>`<p>${s.name}</p>`).join("")}</div>`;
 }
-async function add(){
+
+async function addStudent(){
  let name=prompt("Nombre del alumno");
  if(!name)return;
- await db.from("students").insert({name,belt:"Blanco",grade:0});
- await load(); studentsPage();
+ let {error}=await db.from("students").insert({name,belt:"Blanco",grade:0});
+ if(error){alert(error.message);return;}
+ await loadStudents();
+ studentsPage();
 }
+
 function listPage(){
  app.innerHTML=`<div class="card"><h2>📋 Pasar lista</h2>
- ${students.map(s=>`
- <p>${s.name}
- <button onclick="mark('${s.id}',true)">✅</button>
- <button onclick="mark('${s.id}',false)">❌</button>
- </p>`).join("")}</div>`;
+${students.map(s=>`
+<p>${s.name}
+<button onclick="mark('${s.id}',true)">✅</button>
+<button onclick="mark('${s.id}',false)">❌</button>
+</p>`).join("")}</div>`;
 }
+
 async function mark(id,present){
- await db.from("attendance").insert({student_id:id,present:present});
+let today=new Date().toISOString().slice(0,10);
+
+let existing=await db.from("attendance")
+.select("*")
+.eq("student_id",id)
+.eq("date",today);
+
+if(existing.data && existing.data.length){
+ alert("Ya está registrada la asistencia de hoy");
+ return;
 }
-function historyPage(){
- app.innerHTML=`<div class="card"><h2>Historial</h2><p>Asistencias guardadas.</p></div>`;
+
+let {error}=await db.from("attendance")
+.insert({student_id:id,date:today,present});
+
+if(error){alert(error.message);}
+else{alert("Asistencia guardada");}
 }
+
+async function historyPage(){
+let {data,error}=await db.from("attendance").select("*,students(name)").order("date",{ascending:false});
+if(error){showError(error.message);return;}
+
+app.innerHTML=`<div class="card"><h2>📚 Historial</h2>
+${(data||[]).map(a=>`<p>${a.students?.name||""} - ${a.date} - ${a.present?"Presente":"Falta"}</p>`).join("")||"Sin asistencias"}</div>`;
+}
+
+function showError(e){
+app.innerHTML='<div class="card err">Error: '+e+'</div>';
+}
+
 init();
 </script>
 </body>
