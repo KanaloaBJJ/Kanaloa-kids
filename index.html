@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanaloa KIDS</title>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f4f4f4;
+  margin:0;
+}
+header{
+  background:#111;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+main{
+  padding:20px;
+}
+.card{
+  background:white;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🥷 Kanaloa KIDS</h1>
+</header>
+
+<main id="app">
+Cargando...
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+
+const app=document.getElementById("app");
+
+async function cargar(){
+
+const supabaseClient=supabase.createClient(
+window.KIDS_SUPABASE_URL,
+window.KIDS_SUPABASE_KEY
+);
+
+
+const {data,error}=await supabaseClient
+.from("students")
+.select("*")
+.order("name");
+
+
+if(error){
+app.innerHTML="Error: "+error.message;
+return;
+}
+
+
+const kids=data || [];
+
+
+app.innerHTML=`
+
+<div class="card">
+<h2>🏠 Inicio</h2>
+<p>Alumnos KIDS: ${kids.length}</p>
+</div>
+
+
+<div class="card">
+<h2>👥 Alumnos</h2>
+${kids.map(k=>`
+<p>${k.name}</p>
+`).join("")}
+</div>
+
+
+<div class="card">
+<h2>📚 Historial</h2>
+<p>Preparado para asistencias.</p>
+</div>
+
+`;
+
+}
+
+cargar();
+
+</script>
+
+</body>
+</html>
