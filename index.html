@@ -1,101 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kanaloa KIDS</title>
-<style>
-body{
-  font-family:Arial,sans-serif;
-  background:#f4f4f4;
-  margin:0;
-}
-header{
-  background:#111;
-  color:white;
-  text-align:center;
-  padding:20px;
-}
-main{
-  padding:20px;
-}
-.card{
-  background:white;
-  border-radius:12px;
-  padding:15px;
-  margin-bottom:15px;
-}
-</style>
+<style>body{font-family:Arial;margin:0;background:#f4f4f4}header{background:#111;color:#fff;padding:15px;text-align:center}main{padding:20px 20px 70px}.card{background:#fff;border-radius:12px;padding:15px;margin:10px 0}nav{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:10px;display:flex;justify-content:space-around}button{padding:8px;border-radius:8px}</style>
 </head>
-
 <body>
-
-<header>
-<h1>🥷 Kanaloa KIDS</h1>
-</header>
-
-<main id="app">
-Cargando...
-</main>
-
+<header><h1>🥷 Kanaloa KIDS</h1></header>
+<main id="app">Cargando...</main>
+<nav><button onclick="home()">🏠 Inicio</button><button onclick="studentsPage()">👥 Alumnos</button><button onclick="historyPage()">📚 Historial</button></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-
 <script>
-
-const app=document.getElementById("app");
-
-async function cargar(){
-
-const supabaseClient=supabase.createClient(
-window.KIDS_SUPABASE_URL,
-window.KIDS_SUPABASE_KEY
-);
-
-
-const {data,error}=await supabaseClient
-.from("students")
-.select("*")
-.order("name");
-
-
-if(error){
-app.innerHTML="Error: "+error.message;
-return;
-}
-
-
-const kids=data || [];
-
-
-app.innerHTML=`
-
-<div class="card">
-<h2>🏠 Inicio</h2>
-<p>Alumnos KIDS: ${kids.length}</p>
-</div>
-
-
-<div class="card">
-<h2>👥 Alumnos</h2>
-${kids.map(k=>`
-<p>${k.name}</p>
-`).join("")}
-</div>
-
-
-<div class="card">
-<h2>📚 Historial</h2>
-<p>Preparado para asistencias.</p>
-</div>
-
-`;
-
-}
-
-cargar();
-
+let db,students=[];
+async function init(){db=supabase.createClient(window.KIDS_SUPABASE_URL,window.KIDS_SUPABASE_KEY);await load();home();}
+async function load(){let r=await db.from("students").select("*").order("name");students=r.data||[];}
+function home(){app.innerHTML='<div class="card"><h2>Inicio</h2><p>Alumnos KIDS: '+students.length+'</p></div>'}
+function studentsPage(){app.innerHTML='<div class="card"><h2>Alumnos</h2><button onclick="addStudent()">Añadir</button>'+students.map(s=>'<p>'+s.name+' <button onclick="editStudent(\''+s.id+'\')">Editar</button></p>').join('')+'</div>'}
+async function addStudent(){let n=prompt("Nombre");if(n){await db.from("students").insert({name:n,belt:"Blanco",grade:0});await load();studentsPage();}}
+async function editStudent(id){let s=students.find(x=>x.id==id);let n=prompt("Nombre",s.name);if(n){await db.from("students").update({name:n}).eq("id",id);await load();studentsPage();}}
+function historyPage(){app.innerHTML='<div class="card"><h2>Historial</h2><p>Preparado</p></div>'}
+init();
 </script>
-
-</body>
-</html>
+</body></html>
