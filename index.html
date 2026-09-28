@@ -6,12 +6,11 @@
 <title>Kanaloa KIDS</title>
 <style>
 body{font-family:Arial;margin:0;background:#f4f4f4}
-header{background:#111;color:white;padding:15px;text-align:center}
-main{padding:20px 20px 80px}
-.card{background:white;padding:15px;border-radius:12px;margin-bottom:10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:10px}
+header{background:#111;color:#fff;padding:15px;text-align:center}
+main{padding:20px 20px 90px}
+.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px}
 button{padding:8px;border-radius:8px}
-input{width:100%;padding:8px;margin:5px 0}
 </style>
 </head>
 <body>
@@ -20,6 +19,7 @@ input{width:100%;padding:8px;margin:5px 0}
 <nav>
 <button onclick="home()">🏠 Inicio</button>
 <button onclick="studentsPage()">👥 Alumnos</button>
+<button onclick="listPage()">📋 Lista</button>
 <button onclick="historyPage()">📚 Historial</button>
 </nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -27,36 +27,40 @@ input{width:100%;padding:8px;margin:5px 0}
 <script>
 let db,students=[];
 async function init(){
-db=supabase.createClient(window.KIDS_SUPABASE_URL,window.KIDS_SUPABASE_KEY);
-await load();
-home();
+ db=supabase.createClient(window.KIDS_SUPABASE_URL,window.KIDS_SUPABASE_KEY);
+ await load();
+ home();
 }
 async function load(){
-let r=await db.from("students").select("*").order("name");
-students=r.data||[];
+ let r=await db.from("students").select("*").order("name");
+ students=r.data||[];
 }
 function home(){
-app.innerHTML=`<div class="card"><h2>Inicio</h2><p>Alumnos KIDS: ${students.length}</p></div>`;
+ app.innerHTML=`<div class="card"><h2>Inicio</h2><p>Alumnos KIDS: ${students.length}</p></div>`;
 }
 function studentsPage(){
-app.innerHTML=`<div class="card"><h2>Alumnos</h2><button onclick="add()">+ Añadir</button>${students.map(s=>`<p>${s.name} <button onclick="edit('${s.id}')">Editar</button></p>`).join("")}</div>`;
+ app.innerHTML=`<div class="card"><h2>Alumnos</h2><button onclick="add()">+ Añadir</button>
+ ${students.map(s=>`<p>${s.name}</p>`).join("")}</div>`;
 }
 async function add(){
-let name=prompt("Nombre del alumno");
-if(!name)return;
-await db.from("students").insert({name,belt:"Blanco",grade:0});
-await load(); studentsPage();
+ let name=prompt("Nombre del alumno");
+ if(!name)return;
+ await db.from("students").insert({name,belt:"Blanco",grade:0});
+ await load(); studentsPage();
 }
-async function edit(id){
-let s=students.find(x=>x.id==id);
-let name=prompt("Nombre",s.name);
-if(name){
-await db.from("students").update({name}).eq("id",id);
-await load(); studentsPage();
+function listPage(){
+ app.innerHTML=`<div class="card"><h2>📋 Pasar lista</h2>
+ ${students.map(s=>`
+ <p>${s.name}
+ <button onclick="mark('${s.id}',true)">✅</button>
+ <button onclick="mark('${s.id}',false)">❌</button>
+ </p>`).join("")}</div>`;
 }
+async function mark(id,present){
+ await db.from("attendance").insert({student_id:id,present:present});
 }
 function historyPage(){
-app.innerHTML=`<div class="card"><h2>Historial</h2><p>Preparado.</p></div>`;
+ app.innerHTML=`<div class="card"><h2>Historial</h2><p>Asistencias guardadas.</p></div>`;
 }
 init();
 </script>
