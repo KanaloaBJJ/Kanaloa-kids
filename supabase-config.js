@@ -1,2 +1,2 @@
-window.KIDS_SUPABASE_URL = "https://xxssfvjkfygbdwiukeja.supabase.co";
-window.KIDS_SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4c3NmdmprZnlnYmR3aXVrZWphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1ODYxOTUsImV4cCI6MjEwNjE2MjE5NX0.csimlx0bfkdWA8vcin_QF5Cb6Q1Z2QIHPmKTYBofDmo";
+window.KIDS_SUPABASE_URL = "https://xxssfvjkfygbdwiukeja.supabase.co/rest/v1/";
+window.KIDS_SUPABASE_KEY = "sb_publishable_gb4rBCrbEA6R1jnDfgdaXw_bItA5TQ0";
