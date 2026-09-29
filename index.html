@@ -1,107 +1,510 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.webmanifest?v=10.4"><link rel="icon" type="image/png" href="icon-192.png?v=13.1">
 <title>Kanaloa KIDS</title>
 <style>
-body{font-family:Arial;margin:0;background:#f4f4f4}
-header{background:#111;color:#fff;padding:15px;text-align:center}
-main{padding:20px 20px 90px}
-.card{background:#fff;padding:15px;border-radius:12px;margin-bottom:10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:10px}
-button{padding:8px;border-radius:8px}
-.ok{color:green}.err{color:red}
+body{margin:0;font-family:system-ui;background:#f4f5f7;color:#111827}header{background:#111827;color:#fff;padding:16px;position:sticky;top:0;z-index:2}header h1{margin:0;font-size:21px}
+main{max-width:900px;margin:auto;padding:14px 14px 85px}.card{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin:10px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.stat{font-size:27px;font-weight:800}.muted{color:#6b7280}.small{font-size:12px}button,input{font:inherit}button{border:0;border-radius:10px;padding:10px 12px;background:#111827;color:white}button.secondary{background:#e5e7eb;color:#111827}button.danger{background:#fee2e2;color:#991b1b}input{padding:10px;border:1px solid #e5e7eb;border-radius:10px;width:100%;box-sizing:border-box}label{display:block;font-size:12px;color:#6b7280;margin:8px 0 4px}
+.student{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid #eee}.student:last-child{border-bottom:0}.hidden{display:none!important}
+.nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #ddd;display:flex;justify-content:center;z-index:5}.nav button{flex:1;max-width:130px;background:transparent;color:#374151;font-size:12px;border-radius:0}.nav button.active{font-weight:800}
+.auth{max-width:420px;margin:9vh auto}.notice{background:#fef3c7;color:#78350f;padding:10px;border-radius:10px;margin:8px 0}.success{background:#dcfce7;color:#166534;padding:10px;border-radius:10px;margin:8px 0}
+table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #eee;text-align:left}
+</style><style id="v8-auth-style">
+#v8-auth-overlay{position:fixed;inset:0;z-index:100000;background:#f5f7fb;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+#v8-auth-card{width:min(420px,100%);background:#fff;border-radius:20px;padding:28px;box-shadow:0 12px 40px rgba(0,0,0,.14);box-sizing:border-box}
+#v8-auth-card h1{margin:0 0 8px;font-size:26px} #v8-auth-card p{margin:0 0 20px;color:#667085}
+#v8-auth-card label{display:block;font-size:14px;font-weight:600;margin-top:10px}
+#v8-auth-card input{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid #d0d5dd;border-radius:10px;margin:6px 0 10px;font-size:16px}
+#v8-auth-login{width:100%;padding:13px;border:0;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;background:#111827;color:#fff}
+#v8-auth-error{color:#b42318;min-height:20px;margin:6px 0 10px;font-size:14px}
+body.v8-auth-pending > *:not(#v8-auth-overlay){visibility:hidden}
 </style>
-</head>
-<body>
-<header><h1>🥷 Kanaloa KIDS</h1></header>
-<main id="app">Cargando...</main>
-<nav>
-<button onclick="home()">🏠 Inicio</button>
-<button onclick="studentsPage()">👥 Alumnos</button>
-<button onclick="listPage()">📋 Lista</button>
-<button onclick="historyPage()">📚 Historial</button>
-</nav>
+<style id="v10-student-style">
+#v10-student-modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:130000;display:none;align-items:flex-end;justify-content:center}
+#v10-student-sheet{background:#fff;width:min(680px,100%);max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:22px;box-sizing:border-box}
+#v10-student-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+#v10-student-close{border:0;background:#eee;border-radius:10px;padding:8px 12px;font-size:18px}
+.v10-field{margin:16px 0}.v10-field label{display:block;font-weight:700;margin-bottom:7px}
+.v10-field input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px}
+.v10-choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.v10-choice{border:1px solid #d0d5dd;background:#fff;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
+.v10-choice.selected{outline:3px solid #111827;border-color:#111827}
+#v10-save{width:100%;border:0;background:#111827;color:#fff;border-radius:12px;padding:14px;font-size:16px;font-weight:800;margin-top:12px}
+#v10-error{color:#b42318;min-height:20px;margin-top:8px}
+</style>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script>
-<script>
-let db,students=[];
-
-async function init(){
- db=supabase.createClient(window.KIDS_SUPABASE_URL,window.KIDS_SUPABASE_KEY);
- await loadStudents();
- home();
+<style id="v10-2-grade-style">
+#v10-grades{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+#v10-grades .v10-choice{
+  aspect-ratio:1/1;
+  min-width:0;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  font-weight:900;
+  border-radius:12px;
 }
-
-async function loadStudents(){
- let {data,error}=await db.from("students").select("*").order("name");
- if(error){showError(error.message); return;}
- students=data||[];
+#v10-grades .v10-choice.selected{
+  background:#111827;
+  color:#fff;
+  outline:none;
+  border-color:#111827;
 }
+</style>
 
-function home(){
- app.innerHTML=`<div class="card"><h2>Inicio</h2><p>Alumnos KIDS: ${students.length}</p></div>`;
+<style id="v10-3-delete-style">
+#v10-delete{
+  width:100%;
+  border:1px solid #fecaca;
+  background:#fee2e2;
+  color:#991b1b;
+  border-radius:12px;
+  padding:14px;
+  font-size:16px;
+  font-weight:800;
+  margin-top:10px;
 }
+#v10-delete.hidden{display:none!important}
+</style>
 
-function studentsPage(){
- app.innerHTML=`<div class="card"><h2>Alumnos</h2>
-<button onclick="addStudent()">+ Añadir</button>
-${students.map(s=>`<p>${s.name}</p>`).join("")}</div>`;
+<style id="v10-5-brand-style">
+.brand-logo{display:block;object-fit:contain}
+#v8-auth-logo{width:190px;height:190px;margin:0 auto 12px;border-radius:22px}
+#header-logo{width:44px;height:44px;border-radius:10px;flex:0 0 auto}
+header .brand-head{display:flex;align-items:center;gap:11px}
+header .brand-head h1{margin:0}
+</style>
+
+<style id="v10-7-session-style">
+.session-active{
+  background:#16a34a!important;
+  color:white!important;
+  font-weight:900!important;
+  transform:scale(1.03);
 }
-
-async function addStudent(){
- let name=prompt("Nombre del alumno");
- if(!name)return;
- let {error}=await db.from("students").insert({name,belt:"Blanco",grade:0});
- if(error){alert(error.message);return;}
- await loadStudents();
- studentsPage();
+.session-inactive{
+  background:#e5e7eb!important;
+  color:#111827!important;
 }
+</style>
+<style id="v11-style">
+.v11-insurance-row{display:flex;gap:10px;flex-wrap:wrap}
+.v11-insurance-btn{flex:1;min-width:120px}
+.v11-alert{border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff7ed}
+.v11-alert strong{display:block;margin-bottom:5px}
+.v11-alert ul{margin:5px 0 0 20px;padding:0}
+.v11-badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:800}
+.v11-insured{background:#dcfce7;color:#166534}.v11-uninsured{background:#fee2e2;color:#991b1b}
+</style><style id="v11-2-insurance-style">
+#v11-insurance-page{padding:12px 0}
+.v11-insurance-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.v11-insurance-tabs button{padding:10px 13px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;font-weight:700}
+.v11-insurance-list .student{margin:7px 0}
+</style>
+<style id="v12-photo-style">
+.v12-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;border:2px solid #e5e7eb;background:#f3f4f6}
+.v12-photo-lg{width:96px;height:96px;border-radius:50%;object-fit:cover;display:block;border:3px solid #e5e7eb;background:#f3f4f6}
+.v12-photo-placeholder{display:flex;align-items:center;justify-content:center;font-size:24px}
+.v12-photo-row{display:flex;align-items:center;gap:12px}
+.v12-photo-input{padding:10px 0!important;border:0!important}
+</style>
 
-function listPage(){
- app.innerHTML=`<div class="card"><h2>📋 Pasar lista</h2>
-${students.map(s=>`
-<p>${s.name}
-<button onclick="mark('${s.id}',true)">✅</button>
-<button onclick="mark('${s.id}',false)">❌</button>
-</p>`).join("")}</div>`;
-}
-
-async function mark(id,present){
-let today=new Date().toISOString().slice(0,10);
-
-let existing=await db.from("attendance")
-.select("*")
-.eq("student_id",id)
-.eq("date",today);
-
-if(existing.data && existing.data.length){
- alert("Ya está registrada la asistencia de hoy");
- return;
-}
-
-let {error}=await db.from("attendance")
-.insert({student_id:id,date:today,present});
-
-if(error){alert(error.message);}
-else{alert("Asistencia guardada");}
-}
-
-async function historyPage(){
-let {data,error}=await db.from("attendance").select("*,students(name)").order("date",{ascending:false});
-if(error){showError(error.message);return;}
-
-app.innerHTML=`<div class="card"><h2>📚 Historial</h2>
-${(data||[]).map(a=>`<p>${a.students?.name||""} - ${a.date} - ${a.present?"Presente":"Falta"}</p>`).join("")||"Sin asistencias"}</div>`;
-}
-
-function showError(e){
-app.innerHTML='<div class="card err">Error: '+e+'</div>';
-}
-
-init();
+<style id="v13-teacher-style">
+.v13-teacher{margin:10px 0;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa}
+.v13-teacher select{width:100%;padding:11px;border:1px solid #d0d5dd;border-radius:10px;background:#fff}
+.v13-teacher-label{font-weight:800;margin-bottom:7px;display:block}
+.v13-teacher-note{font-size:12px;color:#6b7280;margin-top:5px}
+</style>
+<style>.v13-history-teacher{font-size:13px;color:#4b5563;margin:5px 0 10px}.v13-teacher-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700}.v13-history-section{margin-top:18px}</style>
+<script id="adult-filter-v139">
+window.getAdultStudents=function(rows){
+  return (rows||[]).filter(function(x){
+    return !x.student_type || x.student_type==='adult';
+  });
+};
 </script>
-</body>
-</html>
+</head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
+<img id="v8-auth-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt="Kanaloa Fight Academy">
+<h1>Kanaloa KIDS</h1><p>Acceso privado de la academia</p>
+<form id="v8-auth-form">
+<label>Email</label><input id="v8-auth-email" type="email" autocomplete="username" value="kanaloacalafell@gmail.com" required>
+<label>Contraseña</label><input id="v8-auth-password" type="password" autocomplete="current-password" required>
+<div id="v8-auth-error"></div><button id="v8-auth-login" type="submit">Entrar</button>
+</form></div></div>
+<header><div class="brand-head"><img id="header-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt=""><div><h1>Kanaloa KIDS</h1><small id="sub">Base de datos online</small></div></div></header>
+<div id="auth" class="auth card hidden"><h2>Acceso</h2><p class="muted">Los datos se comparten entre los dispositivos que inicien sesión.</p>
+<label>Email</label><input id="email" type="email"><label>Contraseña</label><input id="password" type="password">
+<div class="row" style="margin-top:12px"><button id="login">Entrar</button><button class="secondary" id="signup">Crear cuenta</button></div><div id="authmsg" class="small muted"></div></div>
+
+<script>
+function v11DaysSince(d){return d?Math.floor((Date.now()-new Date(d+'T12:00:00'))/86400000):0}
+function v11Birthday(s){
+ if(!s.birth_date)return null;
+ const b=new Date(s.birth_date+'T12:00:00'),n=new Date();
+ const y=new Date(n.getFullYear(),b.getMonth(),b.getDate(),12);
+ const t=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12);
+ const tm=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,12);
+ return y.getTime()===t.getTime()?'today':y.getTime()===tm.getTime()?'tomorrow':null;
+}
+function v11RenderAlerts(){
+ let box=document.getElementById('v11-alerts');if(!box){const d=document.getElementById('dashboard');if(!d)return;box=document.createElement('div');box.id='v11-alerts';d.prepend(box);}
+ const home=document.getElementById('home')||document.getElementById('inicio')||document.getElementById('dashboard');
+ if(home && getComputedStyle(home).display==='none'){box.innerHTML='';return;}
+ const a=(students||[]).filter(s=>s.active!==false),today=[],tomorrow=[],uninsured=[],inactive=[];
+ a.forEach(s=>{
+  const b=v11Birthday(s);if(b==='today')today.push(s);if(b==='tomorrow')tomorrow.push(s);
+  if(s.has_insurance!==true)uninsured.push(s);
+  const l=last(s.id);if(l){const d=v11DaysSince(l);if(d>settings.inactivity_days)inactive.push({s,d})}
+ });
+ let h='';
+ if(today.length)h+=`<div class="v11-alert"><strong>🎉 Cumpleaños hoy</strong><ul>${today.map(s=>`<li>${esc(s.name)}</li>`).join('')}</ul></div>`;
+ if(tomorrow.length)h+=`<div class="v11-alert"><strong>🎂 Cumpleaños mañana</strong><ul>${tomorrow.map(s=>`<li>${esc(s.name)}</li>`).join('')}</ul></div>`;
+ if(uninsured.length)h+=`<div class="v11-alert"><strong>🛡️ Alumnos sin seguro (${uninsured.length})</strong><ul>${uninsured.map(s=>`<li>${esc(s.name)}</li>`).join('')}</ul></div>`;
+ if(inactive.length)h+=`<div class="v11-alert"><strong>⚠️ Más de 21 días sin asistir (${inactive.length})</strong><ul>${inactive.map(x=>`<li>${esc(x.s.name)} — ${x.d} días</li>`).join('')}</ul></div>`;
+ box.innerHTML=h;
+}
+</script>
+<main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div><div id="ranking" class="hidden"></div><div id="rules" class="hidden"></div><div id="insurance" class="hidden"></div></main>
+<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button><button data-v="ranking">🏆<br>Ranking</button><button data-v="insurance">🛡️<br>Seguro</button><button data-v="rules">⚙️<br>Ajustes</button></nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
+<script>
+const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Gris franja blanca","Gris sólido","Gris franja negra","Amarillo franja blanca","Amarillo sólido","Amarillo franja negra","Naranja franja blanca","Naranja sólido","Naranja franja negra","Verde franja blanca","Verde sólido","Verde franja negra"];
+const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(x,ok=false){let d=document.createElement("div");d.className=ok?"success":"notice";d.textContent=x;$("app").prepend(d);setTimeout(()=>d.remove(),3000)}
+function showAuth(){ $("auth").classList.remove("hidden");$("app").classList.add("hidden");$("nav").classList.add("hidden")}
+function showConfig(){showAuth();$("authmsg").textContent="Configura primero supabase-config.js con la URL y Publishable key.";$("login").disabled=true;$("signup").disabled=true}
+async function login(){let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||""}
+async function signup(){let {error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||"Cuenta creada. Revisa el correo si se solicita verificación."}
+async function load(){let [s,a,r,x,ct]=await Promise.all([
+ sb.from("students").select("*").eq("active",true).order("name"),
+ sb.from("attendance").select("*"),
+ sb.from("belt_rules").select("*"),
+ sb.from("app_settings").select("*").eq("id",1).maybeSingle(),
+ sb.from("class_sessions").select("*")
+]);
+if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation")){
+ throw Error(ct.error.message);
+}let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
+  for(const st of students){
+    st.photo_url=null;
+    if(st.photo_path){
+      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo_path,3600);
+      if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
+    }
+  }
+  att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
+function t(b){return rules[b]||[30,30,30,30,30]}function total(id){return (att||[]).filter(a=>String(a.student_id)===String(id) && !(v13GetSession(a.date,a.slot)?.teacher_id!=null && String(v13GetSession(a.date,a.slot).teacher_id)===String(id))).length}function last(id){return att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).map(a=>a.date).sort().at(-1)||null}
+function prog(s){
+ let z=t(s.belt),g=Math.max(0,Math.min(4,Number(s.grade)||0));
+ let need=Number(z[g])||0;
+ let done=total(s.id);
+ let bi=belts.indexOf(s.belt),next=bi>=0&&bi<belts.length-1?belts[bi+1]:null;
+ return{done,need,pct:need?Math.min(100,Math.round(done/need*100)):100,nextBelt:g===4?next:null,isBelt:g===4&&!!next};
+}
+
+function days(d){return d?Math.floor((Date.now()-new Date(d+"T00:00:00"))/86400000):null}
+function setView(v){view=v;["dashboard","attendance","students","history","ranking","insurance","rules"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
+function updateSessionButtons(){
+ let m=document.getElementById("btn-morning"), a=document.getElementById("btn-afternoon");
+ if(!m||!a)return;
+ m.classList.toggle("session-active",slot==="morning");
+ m.classList.toggle("session-inactive",slot!=="morning");
+ a.classList.toggle("session-active",slot==="afternoon");
+ a.classList.toggle("session-inactive",slot!=="afternoon");
+}
+
+
+function v11ShowInsurance(filter){
+ const box=$("v11-insurance-list"); if(!box)return;
+ let a=(students||[]).filter(s=>s.active!==false);
+ if(filter==="yes")a=a.filter(s=>s.has_insurance===true);
+ if(filter==="no")a=a.filter(s=>s.has_insurance!==true);
+ box.innerHTML=a.map(s=>`<div class="student"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.phone?esc(s.phone):"Sin teléfono"} · <span class="v11-badge ${s.has_insurance?"v11-insured":"v11-uninsured"}">${s.has_insurance?"Con seguro":"Sin seguro"}</span></span></span><button class="secondary" onclick="edit('${s.id}')">Editar</button></div>`).join("")||"<p class='muted'>No hay alumnos en esta categoría.</p>";
+}
+
+
+function v13TeacherOptions(selected){
+ const opts=(students||[]).map(s=>`<option value="${s.id}" ${String(s.id)===String(selected||"")?"selected":""}>${esc(s.name)}</option>`).join("");
+ return `<option value="">Sin profesor asignado</option>${opts}`;
+}
+function v13GetSession(dateValue,slotValue){
+ return (classSessions||[]).find(x=>x.date===dateValue && x.slot===slotValue)||null;
+}
+async function v13SaveTeacher(){
+ const sel=document.getElementById("v13-teacher-select"); if(!sel)return;
+ const teacher_id=sel.value||null;
+ const existing=v13GetSession(date,slot);
+ let q;
+ if(existing){
+   q=await sb.from("class_sessions").update({teacher_id}).eq("id",existing.id);
+ }else{
+   q=await sb.from("class_sessions").insert({date,slot,teacher_id});
+ }
+ if(q.error){toast(q.error.message);return}
+ classTeacherId=teacher_id;
+ await load(); render();
+}
+function v13TeacherBlock(){
+ const s=v13GetSession(date,slot);
+ classTeacherId=s?.teacher_id||null;
+ return `<div class="v13-teacher">
+   <span class="v13-teacher-label">👨‍🏫 Profesor de esta clase</span>
+   <select id="v13-teacher-select">${v13TeacherOptions(classTeacherId)}</select>
+   <button style="margin-top:8px" type="button" onclick="v13SaveTeacher()">Guardar profesor</button>
+   <div class="v13-teacher-note">Si el profesor también es alumno, su asistencia como profesor no se contabiliza ni aparece en el ranking.</div>
+ </div>`;
+}
+
+
+function v13ProgressAttendances(studentId){
+  return (att||[]).filter(a=>String(a.student_id)===String(studentId) &&
+    !(v13GetSession(a.date,a.slot)?.teacher_id!=null &&
+      String(v13GetSession(a.date,a.slot).teacher_id)===String(studentId)));
+}
+function v13ProgressCount(studentId){ return total(studentId); }
+
+function v13ProgressForStudent(s){
+  const count=v13ProgressCount(s.id);
+  const current=Number(s.grade||0);
+  const needed=Number((rules||{})[s.belt]?.[current]??0);
+  return {count,current,needed,cycleStart:0,since:count};
+}
+
+function render(){
+ $("dashboard").innerHTML=`<div class="grid"><div class="card"><div class="muted">Alumnos</div><div class="stat">${students.length}</div></div><div class="card"><div class="muted">Asistencias hoy</div><div class="stat">${att.filter(a=>a.date===new Date().toISOString().slice(0,10)).length}</div></div><div class="card"><div class="muted">Total sesiones</div><div class="stat">${att.length}</div></div></div><div id="v11-alerts"></div><div class="card"><h3>🚨 Avisos</h3>${students.map(s=>{let p=prog(s),d=days(last(s.id));return p.pct>=100||d>=settings.inactivity_days?`<div class="student"><span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span><span>${p.pct>=100?(p.isBelt?"🥋 Preparado para cinturón "+p.nextBelt:"Grado alcanzado"):d+" días sin venir"}</span></div>`:""}).join("")||"<p class='muted'>Sin avisos.</p>"}</div><div class="card"><button onclick="logout()">Cerrar sesión</button></div>`;
+ v11RenderAlerts();
+ $("attendance").innerHTML=`${v13TeacherBlock()}<div class="card"><h2>Pasar lista</h2><label>Fecha</label><input id="ad" type="date" value="${date}"><label>Sesión</label><div class="row"><button id="btn-morning" class="session-btn" onclick="slot='morning';render()">🌅 Mañana</button><button id="btn-afternoon" class="session-btn" onclick="slot='afternoon';render()">🌇 Tarde</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="toggle('${s.id}')">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
+ $("students").innerHTML=`<div class="card"><div class="row between"><h2>Alumnos</h2><button onclick="addStudent()">+ Añadir</button></div><input id="search" placeholder="Buscar..."><div id="sl">${students.map(card).join("")}</div></div>`;$("search").oninput=e=>$("sl").innerHTML=students.filter(s=>s.name.toLowerCase().includes(e.target.value.toLowerCase())).map(card).join("");
+ let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🌅 ${by[d].filter(a=>a.slot==="morning").length} · 🌇 ${by[d].filter(a=>a.slot==="afternoon").length}${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
+ let mo=new Date().toISOString().slice(0,7),m=$("rm")?.value||mo,c={};att.filter(a=>a.date.startsWith(m)&&!(v13GetSession(a.date,a.slot)?.teacher_id===a.student_id)).forEach(a=>c[a.student_id]=(c[a.student_id]||0)+1);let rr=students.map(s=>({...s,n:c[s.id]||0})).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));$("ranking").innerHTML=`<div class="card"><h2> mensual</h2><label>Mes</label><input id="rm" type="month" value="${m}"><p class="small muted">Cada sesión cuenta 1; mañana+tarde = 2.</p><table><tr><th>#</th><th>Alumno</th><th>Sesiones</th></tr>${rr.map((s,i)=>`<tr><td>${i<3?["🥇","🥈","🥉"][i]:i+1}</td><td>${esc(s.name)}</td><td><b>${s.n}</b></td></tr>`).join("")}</table></div>`;$("rm").onchange=render;
+ $("insurance").innerHTML=`<div class="card"><h2></h2>
+ <div class="v11-insurance-tabs">
+  <button type="button" id="v11-ins-all">Todos</button>
+  <button type="button" id="v11-ins-yes">✅ Con seguro</button>
+  <button type="button" id="v11-ins-no">❌ Sin seguro</button>
+ </div>
+ <div id="v11-insurance-list"></div></div>`;
+ document.getElementById("v11-ins-all").onclick=()=>v11ShowInsurance("all");
+ document.getElementById("v11-ins-yes").onclick=()=>v11ShowInsurance("yes");
+ document.getElementById("v11-ins-no").onclick=()=>v11ShowInsurance("no");
+ v11ShowInsurance("all");
+ $("rules").innerHTML=`<div class="card"><h2>⚙️ Reglas</h2><p class="small muted">Los valores son de demostración; configura los de tu academia.</p>${belts.map(b=>`<div class="card"><b>${b}</b><div class="grid">${t(b).map((v,i)=>`<div><label>${i<4?"Grado "+(i+1):(b==="Negro"?"Después de grado 4":"Cambio de cinturón")}</label><input id="r${b}${i}" type="number" value="${v??30}"></div>`).join("")}</div></div>`).join("")}<label>Días para aviso de inactividad</label><input id="inact" type="number" value="${settings.inactivity_days}"><br><br><button onclick="saveRules()">Guardar en la nube</button><button class="secondary" onclick="logout()">Cerrar sesión</button></div>`;
+}
+function card(s){
+ let p=prog(s),l=last(s.id);
+ let progress=p.isBelt?`${p.done}/${p.need} para cinturón ${p.nextBelt}`:
+   (s.belt==="Negro"&&Number(s.grade)===4?`${p.done} asistencias`:`${p.done}/${p.need}`);
+ return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade} · ${progress} · ${l?"última "+l:"sin asistencia"}</span></span></span><button class="secondary" onclick="event.stopPropagation();edit('${s.id}')">Editar</button></div>`
+}
+function v13TeacherNameFor(dateValue,slotValue){const cs=v13GetSession(dateValue,slotValue);return cs?.teacher_id?students.find(s=>String(s.id)===String(cs.teacher_id))?.name||"Profesor":null}
+function v13TeacherClasses(id){return (classSessions||[]).filter(x=>String(x.teacher_id)===String(id)).sort((a,b)=>b.date.localeCompare(a.date))}
+async function studentHistory(id){let s=students.find(x=>x.id===id);let rows=att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).sort((a,b)=>b.date.localeCompare(a.date));let taught=v13TeacherClasses(id);$("students").innerHTML=`<div class="card"><button class="secondary" onclick="render()">← Volver</button><div class="v12-photo-row">${s.photo_url?`<img class="v12-photo-lg" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo-lg v12-photo-placeholder">👤</span>`}<div><h2>${esc(s.name)}</h2><p>${s.belt} · grado ${s.grade}</p></div></div><h3>Historial de asistencias (${rows.length})</h3>${rows.map(a=>`<div class="student"><span><b>${a.date}</b><br><span class="small">${a.slot==="morning"?"🌅 Mañana":"🌇 Tarde"}${v13TeacherNameFor(a.date,a.slot)?` · 👨‍🏫 ${esc(v13TeacherNameFor(a.date,a.slot))}`:""}</span></span></div>`).join("")||"<p class='muted'>Sin asistencias.</p>"}<div class="v13-history-section"><h3>👨‍🏫 Clases impartidas como profesor (${taught.length})</h3>${taught.map(c=>`<div class="student" style="cursor:pointer" onclick="classHistory('${c.date}')"><span><b>${c.date}</b><br><span class="small">${c.slot==="morning"?"🌅 Mañana":"🌇 Tarde"}</span></span><span class="v13-teacher-pill">👨‍🏫 Profesor</span></div>`).join("")||"<p class='muted'>No ha impartido clases como profesor.</p>"}</div></div>`}
+async function classHistory(d){
+ let rows=att.filter(a=>a.date===d);
+ let names=id=>students.find(s=>s.id===id)?.name||"Alumno";
+ let teacherFor=sl=>{
+   const x=v13GetSession(d,sl);
+   return x?.teacher_id ? students.find(s=>String(s.id)===String(x.teacher_id))?.name||"Profesor" : null;
+ };
+ let section=(sl,label)=>{
+   let r=rows.filter(a=>a.slot===sl);
+   let t=teacherFor(sl);
+   return `<h3>${label}</h3>
+     <div class="v13-history-teacher">👨‍🏫 Profesor: <b>${t?esc(t):"Sin profesor asignado"}</b></div>
+     ${r.map(a=>`<div class="student"><b>${esc(names(a.student_id))}</b></div>`).join("")||"<p class='muted'>Sin alumnos.</p>"}`;
+ };
+ $("history").innerHTML=`<div class="card">
+   <button class="secondary" onclick="render()">← Volver</button>
+   <h2>Clase · ${d}</h2>
+   ${section("morning","🌅 Mañana")}
+   ${section("afternoon","🌇 Tarde")}
+ </div>`;
+}
+async function toggle(id){if(v13GetSession(date,slot)?.teacher_id===id){toast("El profesor de esta clase no cuenta como alumno.");return}let e=att.find(a=>a.student_id===id&&a.date===date&&a.slot===slot);let q=e?await sb.from("attendance").delete().eq("id",e.id):await sb.from("attendance").insert({student_id:id,date,slot});if(q.error)toast(q.error.message);else{await load();render()}}
+function addStudent(){ window.openV10StudentForm(null); }
+function edit(id){ let s=students.find(x=>x.id===id); window.openV10StudentForm(s); }
+async function saveRules(){for(let b of belts){let v=[0,1,2,3,4].map(i=>parseInt($("r"+b+i).value,10)||1);let q=await sb.from("belt_rules").upsert({belt:b,grade1:v[0],grade2:v[1],grade3:v[2],grade4:v[3],next_belt:v[4]});if(q.error)return toast(q.error.message)}let q=await sb.from("app_settings").upsert({id:1,inactivity_days:parseInt($("inact").value,10)||21});if(q.error)toast(q.error.message);else{await load();toast("Reglas guardadas.",true);render()}}
+async function logout(){await sb.auth.signOut()}
+async function boot(){ $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("nav").classList.remove("hidden");try{await load();setView("dashboard")}catch(e){toast(e.message)}}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setView(b.dataset.v));
+if(!U||!K)showConfig();else{sb=supabase.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true}});$("login").onclick=login;$("signup").onclick=signup;sb.auth.onAuthStateChange((_e,s)=>s?boot():showAuth());sb.auth.getSession().then(x=>x.data.session?boot():showAuth())}
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=13.9",{updateViaCache:"none"}).then(r=>r.update());
+</script><script id="v8-auth-script">
+(function(){
+const ALLOWED="kanaloacalafell@gmail.com";
+const overlay=document.getElementById("v8-auth-overlay"), form=document.getElementById("v8-auth-form");
+const email=document.getElementById("v8-auth-email"), pass=document.getElementById("v8-auth-password"), err=document.getElementById("v8-auth-error");
+function show(){document.body.classList.remove("v8-auth-pending");overlay.style.display="none"}
+function login(msg){document.body.classList.add("v8-auth-pending");overlay.style.display="flex";err.textContent=msg||""}
+async function boot(){
+ if(!window.supabase?.createClient){login("No se ha podido cargar el acceso.");return}
+ if(!window.BJJ_SUPABASE_URL||!window.BJJ_SUPABASE_PUBLISHABLE_KEY){login("Falta la configuración de Supabase.");return}
+ const client=window.supabase.createClient(window.BJJ_SUPABASE_URL,window.BJJ_SUPABASE_PUBLISHABLE_KEY);
+ window.bjjSupabaseClient=client;
+ const {data:{session}}=await client.auth.getSession();
+ if(session?.user?.email?.toLowerCase()===ALLOWED) show(); else login("");
+ client.auth.onAuthStateChange((_e,s)=>s?.user?.email?.toLowerCase()===ALLOWED?show():login(""));
+ form.addEventListener("submit",async e=>{
+  e.preventDefault(); err.textContent="";
+  if(email.value.trim().toLowerCase()!==ALLOWED){err.textContent="Usa el email de la academia.";return}
+  const {error}=await client.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
+  if(error) err.textContent="Email o contraseña incorrectos.";
+ });
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",()=>setTimeout(boot,100)); else setTimeout(boot,100);
+})();
+</script>
+<div id="v10-student-modal">
+ <div id="v10-student-sheet">
+  <div id="v10-student-head"><h2 id="v10-form-title">Nuevo alumno</h2><button id="v10-student-close">✕</button></div>
+  <form id="v10-student-form">
+   <input type="hidden" id="v10-student-id">
+   <div class="v10-field"><label>Nombre</label><input id="v10-first-name" required autocomplete="given-name"></div>
+   <div class="v10-field"><label>Apellidos</label><input id="v10-last-name" autocomplete="family-name"></div>
+   <div class="v10-field"><label>Fecha de nacimiento</label><input id="v11-birth-date" type="date"></div>
+   <div class="v10-field"><label>Número de teléfono</label><input id="v11-phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej. 600 123 456"></div>
+   <div class="v10-field"><label>Foto del alumno</label>
+    <div class="v12-photo-row">
+     <div id="v12-photo-preview" class="v12-photo-lg v12-photo-placeholder">👤</div>
+     <div style="flex:1">
+      <input id="v12-photo" class="v12-photo-input" type="file" accept="image/*">
+      <div class="small muted">Puedes hacer una foto con la cámara o elegir una foto de la galería.</div>
+     </div>
+    </div>
+   </div>
+   <div class="v10-field"><label>Seguro</label>
+    <div class="v11-insurance-row" id="v11-insurance">
+     <button type="button" class="v10-choice v11-insurance-btn" data-value="true">✅ Tiene seguro</button>
+     <button type="button" class="v10-choice v11-insurance-btn" data-value="false">❌ Sin seguro</button>
+    </div>
+   </div>
+   <div class="v10-field"><label>Cinturón</label>
+    <div class="v10-choice-row" id="v10-belts">
+     <button type="button" class="v10-choice" data-value="Blanco">⚪ Blanco</button>
+     <button type="button" class="v10-choice" data-value="Azul">🔵 Azul</button>
+     <button type="button" class="v10-choice" data-value="Morado">🟣 Morado</button>
+     <button type="button" class="v10-choice" data-value="Marrón">🟤 Marrón</button>
+     <button type="button" class="v10-choice" data-value="Negro">⚫ Negro</button>
+    </div>
+   </div>
+   <div class="v10-field"><label>Grados</label>
+    <div class="v10-choice-row" id="v10-grades">
+     <button type="button" class="v10-choice" data-value="0">0</button>
+     <button type="button" class="v10-choice" data-value="1">1</button>
+     <button type="button" class="v10-choice" data-value="2">2</button>
+     <button type="button" class="v10-choice" data-value="3">3</button>
+     <button type="button" class="v10-choice" data-value="4">4</button>
+    </div>
+   </div>
+   <div id="v10-error"></div>
+   <button id="v10-save" type="submit">Guardar alumno</button>
+    <button id="v10-delete" class="hidden" type="button">🗑️ Eliminar alumno</button>
+  </form>
+ </div>
+</div>
+
+<script id="v10-student-form-script">
+(function(){
+ const modal=document.getElementById('v10-student-modal'), form=document.getElementById('v10-student-form');
+ const first=document.getElementById('v10-first-name'), last=document.getElementById('v10-last-name'), sid=document.getElementById('v10-student-id');
+ const err=document.getElementById('v10-error'), title=document.getElementById('v10-form-title');
+ const photoInput=document.getElementById('v12-photo'), photoPreview=document.getElementById('v12-photo-preview');
+ let belt='Blanco', grade=0, insurance=false, photoPath=null;
+ function choose(group,val){
+  document.querySelectorAll('#'+group+' .v10-choice').forEach(b=>b.classList.toggle('selected',String(b.dataset.value)===String(val)));
+ }
+ function openStudent(s){
+  sid.value=s?.id||''; first.value=s?.first_name||s?.name?.split(' ')[0]||'';
+  last.value=s?.last_name||((s?.name||'').split(' ').slice(1).join(' '));
+  document.getElementById('v11-birth-date').value=s?.birth_date||'';
+  document.getElementById('v11-phone').value=s?.phone||'';
+  insurance=s?.has_insurance===true;
+  photoPath=s?.photo_path||null;
+  photoInput.value='';
+  photoPreview.innerHTML=s?.photo_url?`<img class="v12-photo-lg" src="${s.photo_url}" alt="">`:'👤';
+  belt=s?.belt||'Blanco'; grade=Number(s?.grade??0);
+  choose('v10-belts',belt);choose('v10-grades',grade);choose('v11-insurance',String(insurance));
+  title.textContent=s?.id?'Editar alumno':'Nuevo alumno';document.getElementById('v10-delete').classList.toggle('hidden',!s?.id);err.textContent='';modal.style.display='flex';
+ }
+ function close(){modal.style.display='none'}
+ document.getElementById('v10-student-close').onclick=close;
+
+ photoInput.addEventListener('change',()=>{
+   const f=photoInput.files?.[0]; if(!f)return;
+   const u=URL.createObjectURL(f);
+   photoPreview.innerHTML=`<img class="v12-photo-lg" src="${u}" alt="">`;
+ });
+
+ modal.addEventListener('click',e=>{if(e.target===modal)close()});
+ document.querySelectorAll('#v10-belts .v10-choice').forEach(b=>b.onclick=()=>{belt=b.dataset.value;choose('v10-belts',belt)});
+ document.querySelectorAll('#v10-grades .v10-choice').forEach(b=>b.onclick=()=>{grade=Number(b.dataset.value);choose('v10-grades',grade)});
+ document.querySelectorAll('#v11-insurance .v10-choice').forEach(b=>b.onclick=()=>{insurance=b.dataset.value==='true';choose('v11-insurance',String(insurance))});
+ form.addEventListener('submit',async e=>{
+  e.preventDefault(); err.textContent='';
+  const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
+  const fn=first.value.trim(), ln=last.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
+  const payload={student_type:'adult',name:(fn+' '+ln).trim(),first_name:fn,last_name:ln,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null,has_insurance:insurance};
+  let studentId=sid.value||null, q;
+  if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
+  else q=await c.from('students').insert(payload).select('id').single();
+  if(q.error){err.textContent='No se pudo guardar: '+q.error.message;return}
+  if(!studentId) studentId=q.data.id;
+  
+
+  const file=photoInput.files?.[0];
+  if(file){
+    if(!file.type.startsWith('image/')){err.textContent='Selecciona una imagen.';return}
+    if(file.size>8*1024*1024){err.textContent='La foto no puede superar 8 MB.';return}
+    const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+    const path=`${studentId}.${ext}`;
+    if(photoPath && photoPath!==path) await c.storage.from('student-photos').remove([photoPath]);
+    const up=await c.storage.from('student-photos').upload(path,file,{upsert:true,contentType:file.type});
+    if(up.error){err.textContent='El alumno se guardó, pero no se pudo subir la foto: '+up.error.message;return}
+    const uq=await c.from('students').update({photo_path:path}).eq('id',studentId);
+    if(uq.error){err.textContent='La foto se subió, pero no se pudo guardar su referencia.';return}
+  }
+
+  close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+ });;
+
+ document.getElementById('v10-delete').addEventListener('click',async function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  if(!sid.value) return;
+  const displayName=(first.value.trim()+' '+last.value.trim()).trim()||'este alumno';
+  const ok=window.confirm('¿Seguro que quieres eliminar a '+displayName+' de los alumnos activos?\n\nSu historial de asistencias se conservará.');
+  if(!ok) return;
+  err.textContent='';
+  const c=sb || window.bjjSupabaseClient;
+  if(!c){err.textContent='No hay conexión con Supabase.';return;}
+  const {error}=await c.from('students').update({active:false}).eq('id',sid.value);
+  if(error){err.textContent='No se pudo eliminar: '+error.message;return;}
+  close();
+  await load();
+  render();
+  toast('Alumno eliminado de la lista activa.',true);
+ });
+
+ window.openV10StudentForm=openStudent;
+
+ // Intercept likely "new student" controls by visible label, without affecting other controls.
+ document.addEventListener('click',e=>{
+   const el=e.target.closest('button,a');
+   if(!el) return;
+   const t=(el.textContent||'').trim().toLowerCase();
+   if(/nuevo alumno|añadir alumno|agregar alumno|alta alumno|alta de alumno/.test(t)){
+     e.preventDefault();e.stopPropagation();openStudent(null);
+   }
+ },true);
+})();
+</script>
+
+
+
+
+
+
+</body></html>
