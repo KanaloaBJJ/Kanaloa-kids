@@ -198,7 +198,7 @@ function prog(s){
 }
 
 function days(d){return d?Math.floor((Date.now()-new Date(d+"T00:00:00"))/86400000):null}
-function setView(v){view=v;["dashboard","attendance","students","history","rules"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
+function setView(v){view=v;["dashboard","attendance","students","history"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
 function updateSessionButtons(){
  let m=document.getElementById("btn-morning"), a=document.getElementById("btn-afternoon");
  if(!m||!a)return;
@@ -423,7 +423,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
   const fn=first.value.trim(), ln=last.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
-  const payload={student_type:'kids',name:(fn+' '+ln).trim(),first_name:fn,last_name:ln,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
+  const payload={student_type:'kids',name:(fn+' '+ln).trim(),belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
   let studentId=sid.value||null, q;
   if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
   else q=await c.from('students').insert(payload).select('id').single();
