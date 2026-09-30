@@ -28,7 +28,7 @@ body.v8-auth-pending > *:not(#v8-auth-overlay){visibility:hidden}
 .v10-field{margin:16px 0}.v10-field label{display:block;font-weight:700;margin-bottom:7px}
 .v10-field input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px}
 .v10-choice-row{display:flex;flex-wrap:wrap;gap:8px}
-.v10-choice{border:1px solid #d0d5dd;background:#fff;color:#111827;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
+.v10-choice{border:1px solid #d0d5dd;background:#fff;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
 .v10-choice.selected{outline:3px solid #111827;border-color:#111827}
 #v10-save{width:100%;border:0;background:#111827;color:#fff;border-radius:12px;padding:14px;font-size:16px;font-weight:800;margin-top:12px}
 #v10-error{color:#b42318;min-height:20px;margin-top:8px}
@@ -37,7 +37,6 @@ body.v8-auth-pending > *:not(#v8-auth-overlay){visibility:hidden}
 <style id="v10-2-grade-style">
 #v10-grades{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 #v10-grades .v10-choice{
-   color:#111827;
   aspect-ratio:1/1;
   min-width:0;
   padding:0;
@@ -120,7 +119,7 @@ window.getAdultStudents=function(rows){
   });
 };
 </script>
-<style id="kids-belt-fix">#v10-belts .v10-choice{background:#fff!important;color:#111827!important;border:2px solid #d1d5db!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important;text-align:center!important;min-height:46px!important}#v10-belts .v10-choice:nth-child(1){background:#fff!important;color:#111827!important}#v10-belts .v10-choice:nth-child(2),#v10-belts .v10-choice:nth-child(3),#v10-belts .v10-choice:nth-child(4){background:#d1d5db!important;color:#111827!important}#v10-belts .v10-choice:nth-child(5),#v10-belts .v10-choice:nth-child(6),#v10-belts .v10-choice:nth-child(7){background:#facc15!important;color:#111827!important}#v10-belts .v10-choice:nth-child(8),#v10-belts .v10-choice:nth-child(9),#v10-belts .v10-choice:nth-child(10){background:#fb923c!important;color:#111827!important}#v10-belts .v10-choice:nth-child(11),#v10-belts .v10-choice:nth-child(12),#v10-belts .v10-choice:nth-child(13){background:#4ade80!important;color:#111827!important}#v10-belts .v10-choice.selected{outline:3px solid #111827!important;color:#111827!important}</style></head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
+</head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
 <img id="v8-auth-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt="Kanaloa KIDS">
 <h1>Kanaloa KIDS</h1><p>Acceso privado de la academia</p>
 <form id="v8-auth-form">
@@ -159,8 +158,8 @@ function v11RenderAlerts(){
  box.innerHTML=h;
 }
 </script>
-<main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div></main>
-<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button></nav>
+<main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div><div id="rules" class="hidden"></div></main>
+<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button><button data-v="rules">⚙️<br>Ajustes</button></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
 <script>
 const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Gris franja blanca","Gris sólido","Gris franja negra","Amarillo franja blanca","Amarillo sólido","Amarillo franja negra","Naranja franja blanca","Naranja sólido","Naranja franja negra","Verde franja blanca","Verde sólido","Verde franja negra"];
