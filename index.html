@@ -116,7 +116,7 @@ header .brand-head h1{margin:0}
 <script id="adult-filter-v139">
 window.getAdultStudents=function(rows){
   return (rows||[]).filter(function(x){
-    return true;
+    return x.student_type==='kids';
   });
 };
 </script>
@@ -171,7 +171,7 @@ function showConfig(){showAuth();$("authmsg").textContent="Configura primero sup
 async function login(){let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||""}
 async function signup(){let {error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||"Cuenta creada. Revisa el correo si se solicita verificación."}
 async function load(){let [s,a,r,x,ct]=await Promise.all([
- sb.from("students").select("id,name,birth_date,phone,belt,grade,photo").order("name"),
+ sb.from("students").select("*").eq("active",true).order("name"),
  sb.from("attendance").select("*"),
  sb.from("belt_rules").select("*"),
  sb.from("app_settings").select("*").eq("id",1).maybeSingle(),
@@ -181,9 +181,8 @@ if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation"))
  throw Error(ct.error.message);
 }let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
   for(const st of students){
-    st.photo_url=null;
     st.photo_url=st.photo||null;
-    }
+  }
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
 function t(b){return rules[b]||[30,30,30,30,30]}function total(id){return (att||[]).filter(a=>String(a.student_id)===String(id) && !(v13GetSession(a.date,a.slot)?.teacher_id!=null && String(v13GetSession(a.date,a.slot).teacher_id)===String(id))).length}function last(id){return att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).map(a=>a.date).sort().at(-1)||null}
 function prog(s){
@@ -393,10 +392,11 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   document.querySelectorAll('#'+group+' .v10-choice').forEach(b=>b.classList.toggle('selected',String(b.dataset.value)===String(val)));
  }
  function openStudent(s){
-  sid.value=s?.id||''; first.value=s?.name||''; last.value='';
+  sid.value=s?.id||''; first.value=s?.first_name||s?.name?.split(' ')[0]||'';
+  last.value=s?.last_name||((s?.name||'').split(' ').slice(1).join(' '));
   document.getElementById('v11-birth-date').value=s?.birth_date||'';
   document.getElementById('v11-phone').value=s?.phone||'';
-  photoPath=s?.photo||null;
+  photoPath=s?.photo_path||null;
   photoInput.value='';
   photoPreview.innerHTML=s?.photo_url?`<img class="v12-photo-lg" src="${s.photo_url}" alt="">`:'👤';
   belt=s?.belt||'Blanco'; grade=Number(s?.grade??0);
@@ -419,7 +419,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
   const fn=first.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
-  const payload={name:fn,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
+  const payload={student_type:'kids',name:fn,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
   let studentId=sid.value||null, q;
   if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
   else q=await c.from('students').insert(payload).select('id').single();
@@ -428,20 +428,20 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   
 
   const file=photoInput.files?.[0];
-   if(file){
-     if(!file.type.startsWith('image/')){err.textContent='Selecciona una imagen.';return}
-     if(file.size>2*1024*1024){err.textContent='La foto no puede superar 2 MB.';return}
-     const reader=new FileReader();
-     reader.onload=async()=>{
-       const uq=await c.from('students').update({photo:reader.result}).eq('id',studentId);
-       if(uq.error){err.textContent='El alumno se guardó, pero no se pudo guardar la foto: '+uq.error.message;return}
-       close(); await load(); render();
-     };
-     reader.readAsDataURL(file);
-   } else {
-     close(); await load(); render();
-   }
-   close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+  if(file){
+    if(!file.type.startsWith('image/')){err.textContent='Selecciona una imagen.';return}
+    if(file.size>2*1024*1024){err.textContent='La foto no puede superar 2 MB.';return}
+    const reader=new FileReader();
+    reader.onload=async()=>{
+      const uq=await c.from('students').update({photo:reader.result}).eq('id',studentId);
+      if(uq.error){err.textContent='El alumno se guardó, pero no se pudo guardar la foto: '+uq.error.message;return}
+      close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+    };
+    reader.readAsDataURL(file);
+  } else {
+    close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+  }
+
  });;
 
  document.getElementById('v10-delete').addEventListener('click',async function(e){
