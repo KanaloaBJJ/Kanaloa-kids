@@ -1,3 +1,4 @@
+```
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.webmanifest?v=10.4"><link rel="icon" type="image/png" href="icon-192.png?v=13.1">
@@ -28,7 +29,7 @@ body.v8-auth-pending > *:not(#v8-auth-overlay){visibility:hidden}
 .v10-field{margin:16px 0}.v10-field label{display:block;font-weight:700;margin-bottom:7px}
 .v10-field input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px}
 .v10-choice-row{display:flex;flex-wrap:wrap;gap:8px}
-.v10-choice{border:1px solid #d0d5dd;background:#fff;color:#111827;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
+.v10-choice{border:1px solid #d0d5dd;background:#fff;border-radius:12px;padding:11px 13px;font-weight:700;cursor:pointer}
 .v10-choice.selected{outline:3px solid #111827;border-color:#111827}
 #v10-save{width:100%;border:0;background:#111827;color:#fff;border-radius:12px;padding:14px;font-size:16px;font-weight:800;margin-top:12px}
 #v10-error{color:#b42318;min-height:20px;margin-top:8px}
@@ -37,7 +38,6 @@ body.v8-auth-pending > *:not(#v8-auth-overlay){visibility:hidden}
 <style id="v10-2-grade-style">
 #v10-grades{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 #v10-grades .v10-choice{
-   color:#111827;
   aspect-ratio:1/1;
   min-width:0;
   padding:0;
@@ -92,11 +92,18 @@ header .brand-head h1{margin:0}
 }
 </style>
 <style id="v11-style">
+.v11-insurance-row{display:flex;gap:10px;flex-wrap:wrap}
+.v11-insurance-btn{flex:1;min-width:120px}
 .v11-alert{border-radius:12px;padding:12px 14px;margin:8px 0;background:#fff7ed}
 .v11-alert strong{display:block;margin-bottom:5px}
 .v11-alert ul{margin:5px 0 0 20px;padding:0}
 .v11-badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:800}
 .v11-insured{background:#dcfce7;color:#166534}.v11-uninsured{background:#fee2e2;color:#991b1b}
+</style><style id="v11-2-insurance-style">
+#v11-insurance-page{padding:12px 0}
+.v11-insurance-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.v11-insurance-tabs button{padding:10px 13px;border:1px solid #d0d5dd;border-radius:10px;background:#fff;font-weight:700}
+.v11-insurance-list .student{margin:7px 0}
 </style>
 <style id="v12-photo-style">
 .v12-photo{width:52px;height:52px;border-radius:50%;object-fit:cover;display:block;border:2px solid #e5e7eb;background:#f3f4f6}
@@ -113,13 +120,23 @@ header .brand-head h1{margin:0}
 .v13-teacher-note{font-size:12px;color:#6b7280;margin-top:5px}
 </style>
 <style>.v13-history-teacher{font-size:13px;color:#4b5563;margin:5px 0 10px}.v13-teacher-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700}.v13-history-section{margin-top:18px}</style>
-<script id="adult-filter-v139">
-window.getAdultStudents=function(rows){
-  return rows||[];
+<!-- KANALOA KIDS MODE V2.2 -->
+<script id="kids-mode-v22">
+window.KANALOA_KIDS_MODE = true;
+window.getKidsStudents = function(rows){
+  return (rows || []).filter(function(x){ return x.student_type === 'child'; });
 };
 </script>
-<style id="kids-belt-fix">#v10-belts .v10-choice{background:#fff!important;color:#111827!important;border:2px solid #d1d5db!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important;text-align:center!important;min-height:46px!important}#v10-belts .v10-choice:nth-child(1){background:#fff!important;color:#111827!important}#v10-belts .v10-choice:nth-child(2),#v10-belts .v10-choice:nth-child(3),#v10-belts .v10-choice:nth-child(4){background:#d1d5db!important;color:#111827!important}#v10-belts .v10-choice:nth-child(5),#v10-belts .v10-choice:nth-child(6),#v10-belts .v10-choice:nth-child(7){background:#facc15!important;color:#111827!important}#v10-belts .v10-choice:nth-child(8),#v10-belts .v10-choice:nth-child(9),#v10-belts .v10-choice:nth-child(10){background:#fb923c!important;color:#111827!important}#v10-belts .v10-choice:nth-child(11),#v10-belts .v10-choice:nth-child(12),#v10-belts .v10-choice:nth-child(13){background:#4ade80!important;color:#111827!important}#v10-belts .v10-choice.selected{outline:3px solid #111827!important;color:#111827!important}</style></head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
-<img id="v8-auth-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt="Kanaloa KIDS">
+
+<script id="kanaloa-kids-filter-v23">
+window.filterKidsStudents=function(rows){
+ return (rows||[]).filter(function(s){
+   return s.student_type === 'child';
+ });
+};
+</script>
+</head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
+<img id="v8-auth-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt="Kanaloa Fight Academy">
 <h1>Kanaloa KIDS</h1><p>Acceso privado de la academia</p>
 <form id="v8-auth-form">
 <label>Email</label><input id="v8-auth-email" type="email" autocomplete="username" value="kanaloacalafell@gmail.com" required>
@@ -153,15 +170,15 @@ function v11RenderAlerts(){
  let h='';
  if(today.length)h+=`<div class="v11-alert"><strong>🎉 Cumpleaños hoy</strong><ul>${today.map(s=>`<li>${esc(s.name)}</li>`).join('')}</ul></div>`;
  if(tomorrow.length)h+=`<div class="v11-alert"><strong>🎂 Cumpleaños mañana</strong><ul>${tomorrow.map(s=>`<li>${esc(s.name)}</li>`).join('')}</ul></div>`;
- if(inactive.length)h+=`<div class="v11-alert"><strong>⚠️ Más de 21 días sin asistir (${inactive.length})</strong><ul>${inactive.map(x=>`<li>${esc(x.s.name)} — ${x.d} días</li>`).join('')}</ul></div>`;
+  if(inactive.length)h+=`<div class="v11-alert"><strong>⚠️ Más de 21 días sin asistir (${inactive.length})</strong><ul>${inactive.map(x=>`<li>${esc(x.s.name)} — ${x.d} días</li>`).join('')}</ul></div>`;
  box.innerHTML=h;
 }
 </script>
-<main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div></main>
-<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button></nav>
+<main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div><div id="ranking" class="hidden"></div><div id="rules" class="hidden"></div></main>
+<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button><button data-v="ranking">🏆<br>Ranking</button><button data-v="rules">⚙️<br>Ajustes</button></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
 <script>
-const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Gris franja blanca","Gris sólido","Gris franja negra","Amarillo franja blanca","Amarillo sólido","Amarillo franja negra","Naranja franja blanca","Naranja sólido","Naranja franja negra","Verde franja blanca","Verde sólido","Verde franja negra"];
+const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Gris con franja blanca","Gris sólido","Gris con franja negra","Amarillo con franja blanca","Amarillo sólido","Amarillo con franja negra","Naranja con franja blanca","Naranja sólido","Naranja con franja negra","Verde con franja blanca","Verde sólido","Verde con franja negra"];
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(x,ok=false){let d=document.createElement("div");d.className=ok?"success":"notice";d.textContent=x;$("app").prepend(d);setTimeout(()=>d.remove(),3000)}
 function showAuth(){ $("auth").classList.remove("hidden");$("app").classList.add("hidden");$("nav").classList.add("hidden")}
@@ -169,7 +186,7 @@ function showConfig(){showAuth();$("authmsg").textContent="Configura primero sup
 async function login(){let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||""}
 async function signup(){let {error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||"Cuenta creada. Revisa el correo si se solicita verificación."}
 async function load(){let [s,a,r,x,ct]=await Promise.all([
- sb.from("students").select("id,name,birth_date,phone,belt,grade,photo").order("name"),
+ sb.from("students").select("*").eq("active",true).order("name"),
  sb.from("attendance").select("*"),
  sb.from("belt_rules").select("*"),
  sb.from("app_settings").select("*").eq("id",1).maybeSingle(),
@@ -177,9 +194,13 @@ async function load(){let [s,a,r,x,ct]=await Promise.all([
 ]);
 if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation")){
  throw Error(ct.error.message);
-}let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
+}let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.filterKidsStudents(s.data||[]);
   for(const st of students){
-    st.photo_url=st.photo||null;
+    st.photo_url=null;
+    if(st.photo_path){
+      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo_path,3600);
+      if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
+    }
   }
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
 function t(b){return rules[b]||[30,30,30,30,30]}function total(id){return (att||[]).filter(a=>String(a.student_id)===String(id) && !(v13GetSession(a.date,a.slot)?.teacher_id!=null && String(v13GetSession(a.date,a.slot).teacher_id)===String(id))).length}function last(id){return att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).map(a=>a.date).sort().at(-1)||null}
@@ -192,7 +213,7 @@ function prog(s){
 }
 
 function days(d){return d?Math.floor((Date.now()-new Date(d+"T00:00:00"))/86400000):null}
-function setView(v){view=v;["dashboard","attendance","students","history","rules"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
+function setView(v){view=v;["dashboard","attendance","students","history","ranking","insurance","rules"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
 function updateSessionButtons(){
  let m=document.getElementById("btn-morning"), a=document.getElementById("btn-afternoon");
  if(!m||!a)return;
@@ -203,7 +224,13 @@ function updateSessionButtons(){
 }
 
 
-
+function v11ShowInsurance(filter){
+ const box=$("v11-insurance-list"); if(!box)return;
+ let a=(students||[]).filter(s=>s.active!==false);
+ if(filter==="yes")a=a.filter(s=>s.has_insurance===true);
+ if(filter==="no")a=a.filter(s=>s.has_insurance!==true);
+ box.innerHTML=a.map(s=>`<div class="student"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.phone?esc(s.phone):"Sin teléfono"} · <span class="v11-badge ${s.has_insurance?"v11-insured":"v11-uninsured"}">${s.has_insurance?"Con seguro":"Sin seguro"}</span></span></span><button class="secondary" onclick="edit('${s.id}')">Editar</button></div>`).join("")||"<p class='muted'>No hay alumnos en esta categoría.</p>";
+}
 
 
 function v13TeacherOptions(selected){
@@ -234,7 +261,7 @@ function v13TeacherBlock(){
    <span class="v13-teacher-label">👨‍🏫 Profesor de esta clase</span>
    <select id="v13-teacher-select">${v13TeacherOptions(classTeacherId)}</select>
    <button style="margin-top:8px" type="button" onclick="v13SaveTeacher()">Guardar profesor</button>
-   <div class="v13-teacher-note">Si el profesor también es alumno, su asistencia como profesor no se contabiliza y no cuenta como asistencia de alumno.</div>
+   <div class="v13-teacher-note">Si el profesor también es alumno, su asistencia como profesor no se contabiliza ni aparece en el ranking.</div>
  </div>`;
 }
 
@@ -259,15 +286,24 @@ function render(){
  $("attendance").innerHTML=`${v13TeacherBlock()}<div class="card"><h2>Pasar lista</h2><label>Fecha</label><input id="ad" type="date" value="${date}"><label>Sesión</label><div class="row"><button id="btn-morning" class="session-btn" onclick="slot='morning';render()">🌅 Mañana</button><button id="btn-afternoon" class="session-btn" onclick="slot='afternoon';render()">🌇 Tarde</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="toggle('${s.id}')">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
  $("students").innerHTML=`<div class="card"><div class="row between"><h2>Alumnos</h2><button onclick="addStudent()">+ Añadir</button></div><input id="search" placeholder="Buscar..."><div id="sl">${students.map(card).join("")}</div></div>`;$("search").oninput=e=>$("sl").innerHTML=students.filter(s=>s.name.toLowerCase().includes(e.target.value.toLowerCase())).map(card).join("");
  let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🌅 ${by[d].filter(a=>a.slot==="morning").length} · 🌇 ${by[d].filter(a=>a.slot==="afternoon").length}${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
+ let mo=new Date().toISOString().slice(0,7),m=$("rm")?.value||mo,c={};att.filter(a=>a.date.startsWith(m)&&!(v13GetSession(a.date,a.slot)?.teacher_id===a.student_id)).forEach(a=>c[a.student_id]=(c[a.student_id]||0)+1);let rr=students.map(s=>({...s,n:c[s.id]||0})).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));$("ranking").innerHTML=`<div class="card"><h2>🏆 Ranking mensual</h2><label>Mes</label><input id="rm" type="month" value="${m}"><p class="small muted">Cada sesión cuenta 1; mañana+tarde = 2.</p><table><tr><th>#</th><th>Alumno</th><th>Sesiones</th></tr>${rr.map((s,i)=>`<tr><td>${i<3?["🥇","🥈","🥉"][i]:i+1}</td><td>${esc(s.name)}</td><td><b>${s.n}</b></td></tr>`).join("")}</table></div>`;$("rm").onchange=render;
+ $("insurance").innerHTML=`<div class="card"><h2>🛡️ Seguro</h2>
+ <div class="v11-insurance-tabs">
+  <button type="button" id="v11-ins-all">Todos</button>
+  <button type="button" id="v11-ins-yes">✅ Con seguro</button>
+  <button type="button" id="v11-ins-no">❌ Sin seguro</button>
+ </div>
+ <div id="v11-insurance-list"></div></div>`;
+ document.getElementById("v11-ins-all").onclick=()=>v11ShowInsurance("all");
  document.getElementById("v11-ins-yes").onclick=()=>v11ShowInsurance("yes");
  document.getElementById("v11-ins-no").onclick=()=>v11ShowInsurance("no");
  v11ShowInsurance("all");
- $("rules").innerHTML=`<div class="card"><h2>⚙️ Reglas</h2><p class="small muted">Los valores son de demostración; configura los de tu academia.</p>${belts.map(b=>`<div class="card"><b>${b}</b><div class="grid">${t(b).map((v,i)=>`<div><label>${i<4?"Grado "+(i+1):(i===4?"Cambio de cinturón":"Grado")}</label><input id="r${b}${i}" type="number" value="${v??30}"></div>`).join("")}</div></div>`).join("")}<label>Días para aviso de inactividad</label><input id="inact" type="number" value="${settings.inactivity_days}"><br><br><button onclick="saveRules()">Guardar en la nube</button><button class="secondary" onclick="logout()">Cerrar sesión</button></div>`;
+ $("rules").innerHTML=`<div class="card"><h2>⚙️ Reglas</h2><p class="small muted">Los valores son de demostración; configura los de tu academia.</p>${belts.map(b=>`<div class="card"><b>${b}</b><div class="grid">${t(b).map((v,i)=>`<div><label>${i<4?"Grado "+(i+1):(b==="Negro"?"Después de grado 4":"Cambio de cinturón")}</label><input id="r${b}${i}" type="number" value="${v??30}"></div>`).join("")}</div></div>`).join("")}<label>Días para aviso de inactividad</label><input id="inact" type="number" value="${settings.inactivity_days}"><br><br><button onclick="saveRules()">Guardar en la nube</button><button class="secondary" onclick="logout()">Cerrar sesión</button></div>`;
 }
 function card(s){
  let p=prog(s),l=last(s.id);
  let progress=p.isBelt?`${p.done}/${p.need} para cinturón ${p.nextBelt}`:
-   (Number(s.grade)===4?`${p.done} asistencias`:`${p.done}/${p.need}`);
+   (s.belt==="Negro"&&Number(s.grade)===4?`${p.done} asistencias`:`${p.done}/${p.need}`);
  return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade} · ${progress} · ${l?"última "+l:"sin asistencia"}</span></span></span><button class="secondary" onclick="event.stopPropagation();edit('${s.id}')">Editar</button></div>`
 }
 function v13TeacherNameFor(dateValue,slotValue){const cs=v13GetSession(dateValue,slotValue);return cs?.teacher_id?students.find(s=>String(s.id)===String(cs.teacher_id))?.name||"Profesor":null}
@@ -302,7 +338,7 @@ async function logout(){await sb.auth.signOut()}
 async function boot(){ $("auth").classList.add("hidden");$("app").classList.remove("hidden");$("nav").classList.remove("hidden");try{await load();setView("dashboard")}catch(e){toast(e.message)}}
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setView(b.dataset.v));
 if(!U||!K)showConfig();else{sb=supabase.createClient(U,K,{auth:{persistSession:true,autoRefreshToken:true}});$("login").onclick=login;$("signup").onclick=signup;sb.auth.onAuthStateChange((_e,s)=>s?boot():showAuth());sb.auth.getSession().then(x=>x.data.session?boot():showAuth())}
-if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=14.1",{updateViaCache:"none"}).then(r=>r.update());
+if("serviceWorker"in navigator)navigator.serviceWorker.register("sw.js?v=2.4",{updateViaCache:"none"}).then(r=>r.update());
 </script><script id="v8-auth-script">
 (function(){
 const ALLOWED="kanaloacalafell@gmail.com";
@@ -348,19 +384,11 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
    </div>
    <div class="v10-field"><label>Cinturón</label>
     <div class="v10-choice-row" id="v10-belts">
-     <button type="button" class="v10-choice" data-value="Blanco">Blanco</button>
-     <button type="button" class="v10-choice" data-value="Gris franja blanca">Gris franja blanca</button>
-     <button type="button" class="v10-choice" data-value="Gris sólido">Gris sólido</button>
-     <button type="button" class="v10-choice" data-value="Gris franja negra">Gris franja negra</button>
-     <button type="button" class="v10-choice" data-value="Amarillo franja blanca">Amarillo franja blanca</button>
-     <button type="button" class="v10-choice" data-value="Amarillo sólido">Amarillo sólido</button>
-     <button type="button" class="v10-choice" data-value="Amarillo franja negra">Amarillo franja negra</button>
-     <button type="button" class="v10-choice" data-value="Naranja franja blanca">Naranja franja blanca</button>
-     <button type="button" class="v10-choice" data-value="Naranja sólido">Naranja sólido</button>
-     <button type="button" class="v10-choice" data-value="Naranja franja negra">Naranja franja negra</button>
-     <button type="button" class="v10-choice" data-value="Verde franja blanca">Verde franja blanca</button>
-     <button type="button" class="v10-choice" data-value="Verde sólido">Verde sólido</button>
-     <button type="button" class="v10-choice" data-value="Verde franja negra">Verde franja negra</button>
+     <button type="button" class="v10-choice" data-value="Blanco">⚪ Blanco</button>
+     <button type="button" class="v10-choice" data-value="Azul">🔵 Azul</button>
+     <button type="button" class="v10-choice" data-value="Morado">🟣 Morado</button>
+     <button type="button" class="v10-choice" data-value="Marrón">🟤 Marrón</button>
+     <button type="button" class="v10-choice" data-value="Negro">⚫ Negro</button>
     </div>
    </div>
    <div class="v10-field"><label>Grados</label>
@@ -394,7 +422,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   last.value=s?.last_name||((s?.name||'').split(' ').slice(1).join(' '));
   document.getElementById('v11-birth-date').value=s?.birth_date||'';
   document.getElementById('v11-phone').value=s?.phone||'';
-  photoPath=s?.photo_path||null;
+  photoPath=null;
   photoInput.value='';
   photoPreview.innerHTML=s?.photo_url?`<img class="v12-photo-lg" src="${s.photo_url}" alt="">`:'👤';
   belt=s?.belt||'Blanco'; grade=Number(s?.grade??0);
@@ -413,6 +441,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
  modal.addEventListener('click',e=>{if(e.target===modal)close()});
  document.querySelectorAll('#v10-belts .v10-choice').forEach(b=>b.onclick=()=>{belt=b.dataset.value;choose('v10-belts',belt)});
  document.querySelectorAll('#v10-grades .v10-choice').forEach(b=>b.onclick=()=>{grade=Number(b.dataset.value);choose('v10-grades',grade)});
+ document.querySelectorAll('#v11-insurance .v10-choice').forEach(b=>b.onclick=()=>{insurance=b.dataset.value==='true';choose('v11-insurance',String(insurance))});
  form.addEventListener('submit',async e=>{
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
@@ -428,16 +457,15 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   const file=photoInput.files?.[0];
   if(file){
     if(!file.type.startsWith('image/')){err.textContent='Selecciona una imagen.';return}
-    if(file.size>2*1024*1024){err.textContent='La foto no puede superar 2 MB.';return}
-    const reader=new FileReader();
-    reader.onload=async()=>{
-      const uq=await c.from('students').update({photo:reader.result}).eq('id',studentId);
-      if(uq.error){err.textContent='El alumno se guardó, pero no se pudo guardar la foto: '+uq.error.message;return}
-      close(); await load(); render();
-    };
-    reader.readAsDataURL(file);
-  } else {
-    close(); await load(); render();
+    if(file.size>8*1024*1024){err.textContent='La foto no puede superar 8 MB.';return}
+    const dataUrl=await new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(r.result);
+      r.onerror=()=>reject(new Error('No se pudo leer la foto.'));
+      r.readAsDataURL(file);
+    });
+    const pq=await c.from('students').update({photo:dataUrl}).eq('id',studentId);
+    if(pq.error){err.textContent='El alumno se guardó, pero no se pudo guardar la foto: '+pq.error.message;return}
   }
 
   close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
@@ -481,3 +509,4 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
 
 
 </body></html>
+```
