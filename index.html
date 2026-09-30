@@ -1,7 +1,7 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827"><link rel="manifest" href="manifest.webmanifest?v=10.4"><link rel="icon" type="image/png" href="icon-192.png?v=13.1">
-<title>Kanaloa KIDS</title>
+<title>Kanaloa BJJ</title>
 <style>
 body{margin:0;font-family:system-ui;background:#f4f5f7;color:#111827}header{background:#111827;color:#fff;padding:16px;position:sticky;top:0;z-index:2}header h1{margin:0;font-size:21px}
 main{max-width:900px;margin:auto;padding:14px 14px 85px}.card{background:white;border:1px solid #e5e7eb;border-radius:16px;padding:14px;margin:10px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
@@ -122,19 +122,19 @@ header .brand-head h1{margin:0}
 <script id="adult-filter-v139">
 window.getAdultStudents=function(rows){
   return (rows||[]).filter(function(x){
-    return !x.student_type || x.student_type==='adult';
+    return !x.student_type || x.student_type==='kids';
   });
 };
 </script>
 </head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
 <img id="v8-auth-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt="Kanaloa Fight Academy">
-<h1>Kanaloa KIDS</h1><p>Acceso privado de la academia</p>
+<h1>Kanaloa BJJ</h1><p>Acceso privado de la academia</p>
 <form id="v8-auth-form">
 <label>Email</label><input id="v8-auth-email" type="email" autocomplete="username" value="kanaloacalafell@gmail.com" required>
 <label>Contraseña</label><input id="v8-auth-password" type="password" autocomplete="current-password" required>
 <div id="v8-auth-error"></div><button id="v8-auth-login" type="submit">Entrar</button>
 </form></div></div>
-<header><div class="brand-head"><img id="header-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt=""><div><h1>Kanaloa KIDS</h1><small id="sub">Base de datos online</small></div></div></header>
+<header><div class="brand-head"><img id="header-logo" class="brand-logo" src="kanaloa-logo.png?v=13.1" alt=""><div><h1>Kanaloa BJJ</h1><small id="sub">Base de datos online</small></div></div></header>
 <div id="auth" class="auth card hidden"><h2>Acceso</h2><p class="muted">Los datos se comparten entre los dispositivos que inicien sesión.</p>
 <label>Email</label><input id="email" type="email"><label>Contraseña</label><input id="password" type="password">
 <div class="row" style="margin-top:12px"><button id="login">Entrar</button><button class="secondary" id="signup">Crear cuenta</button></div><div id="authmsg" class="small muted"></div></div>
@@ -168,10 +168,10 @@ function v11RenderAlerts(){
 }
 </script>
 <main id="app" class="hidden"><div id="dashboard"><div id="v11-alerts"></div></div><div id="attendance" class="hidden"></div><div id="students" class="hidden"></div><div id="history" class="hidden"></div><div id="ranking" class="hidden"></div><div id="rules" class="hidden"></div><div id="insurance" class="hidden"></div></main>
-<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button><button data-v="ranking">🏆<br>Ranking</button><button data-v="insurance">🛡️<br>Seguro</button><button data-v="rules">⚙️<br>Ajustes</button></nav>
+<nav id="nav" class="nav hidden"><button data-v="dashboard">🏠<br>Inicio</button><button data-v="attendance">✅<br>Lista</button><button data-v="students">👥<br>Alumnos</button><button data-v="history">📚<br>Historial</button><button data-v="rules">⚙️<br>Ajustes</button></nav>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script>
 <script>
-const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Gris franja blanca","Gris sólido","Gris franja negra","Amarillo franja blanca","Amarillo sólido","Amarillo franja negra","Naranja franja blanca","Naranja sólido","Naranja franja negra","Verde franja blanca","Verde sólido","Verde franja negra"];
+const U=window.BJJ_SUPABASE_URL,K=window.BJJ_SUPABASE_PUBLISHABLE_KEY;let sb,students=[],att=[],rules={},classSessions=[],settings={inactivity_days:21,academy_name:"BJJ Academy"},view="dashboard",date=new Date().toISOString().slice(0,10),slot="morning",classTeacherId=null;const belts=["Blanco","Azul","Morado","Marrón","Negro"];
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function toast(x,ok=false){let d=document.createElement("div");d.className=ok?"success":"notice";d.textContent=x;$("app").prepend(d);setTimeout(()=>d.remove(),3000)}
 function showAuth(){ $("auth").classList.remove("hidden");$("app").classList.add("hidden");$("nav").classList.add("hidden")}
@@ -279,8 +279,8 @@ function render(){
  $("attendance").innerHTML=`${v13TeacherBlock()}<div class="card"><h2>Pasar lista</h2><label>Fecha</label><input id="ad" type="date" value="${date}"><label>Sesión</label><div class="row"><button id="btn-morning" class="session-btn" onclick="slot='morning';render()">🌅 Mañana</button><button id="btn-afternoon" class="session-btn" onclick="slot='afternoon';render()">🌇 Tarde</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="toggle('${s.id}')">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
  $("students").innerHTML=`<div class="card"><div class="row between"><h2>Alumnos</h2><button onclick="addStudent()">+ Añadir</button></div><input id="search" placeholder="Buscar..."><div id="sl">${students.map(card).join("")}</div></div>`;$("search").oninput=e=>$("sl").innerHTML=students.filter(s=>s.name.toLowerCase().includes(e.target.value.toLowerCase())).map(card).join("");
  let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🌅 ${by[d].filter(a=>a.slot==="morning").length} · 🌇 ${by[d].filter(a=>a.slot==="afternoon").length}${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
- let mo=new Date().toISOString().slice(0,7),m=$("rm")?.value||mo,c={};att.filter(a=>a.date.startsWith(m)&&!(v13GetSession(a.date,a.slot)?.teacher_id===a.student_id)).forEach(a=>c[a.student_id]=(c[a.student_id]||0)+1);let rr=students.map(s=>({...s,n:c[s.id]||0})).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));$("ranking").innerHTML=`<div class="card"><h2> mensual</h2><label>Mes</label><input id="rm" type="month" value="${m}"><p class="small muted">Cada sesión cuenta 1; mañana+tarde = 2.</p><table><tr><th>#</th><th>Alumno</th><th>Sesiones</th></tr>${rr.map((s,i)=>`<tr><td>${i<3?["🥇","🥈","🥉"][i]:i+1}</td><td>${esc(s.name)}</td><td><b>${s.n}</b></td></tr>`).join("")}</table></div>`;$("rm").onchange=render;
- $("insurance").innerHTML=`<div class="card"><h2></h2>
+ let mo=new Date().toISOString().slice(0,7),m=$("rm")?.value||mo,c={};att.filter(a=>a.date.startsWith(m)&&!(v13GetSession(a.date,a.slot)?.teacher_id===a.student_id)).forEach(a=>c[a.student_id]=(c[a.student_id]||0)+1);let rr=students.map(s=>({...s,n:c[s.id]||0})).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name));$("ranking").innerHTML=`<div class="card"><h2>🏆 Ranking mensual</h2><label>Mes</label><input id="rm" type="month" value="${m}"><p class="small muted">Cada sesión cuenta 1; mañana+tarde = 2.</p><table><tr><th>#</th><th>Alumno</th><th>Sesiones</th></tr>${rr.map((s,i)=>`<tr><td>${i<3?["🥇","🥈","🥉"][i]:i+1}</td><td>${esc(s.name)}</td><td><b>${s.n}</b></td></tr>`).join("")}</table></div>`;$("rm").onchange=render;
+ $("insurance").innerHTML=`<div class="card"><h2>🛡️ Seguro</h2>
  <div class="v11-insurance-tabs">
   <button type="button" id="v11-ins-all">Todos</button>
   <button type="button" id="v11-ins-yes">✅ Con seguro</button>
@@ -375,7 +375,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
      </div>
     </div>
    </div>
-   <div class="v10-field"><label>Seguro</label>
+   <div class="v10-field hidden"><label>Seguro</label>
     <div class="v11-insurance-row" id="v11-insurance">
      <button type="button" class="v10-choice v11-insurance-btn" data-value="true">✅ Tiene seguro</button>
      <button type="button" class="v10-choice v11-insurance-btn" data-value="false">❌ Sin seguro</button>
@@ -446,7 +446,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
   const fn=first.value.trim(), ln=last.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
-  const payload={student_type:'adult',name:(fn+' '+ln).trim(),first_name:fn,last_name:ln,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null,has_insurance:insurance};
+  const payload={student_type:'kids',name:(fn+' '+ln).trim(),first_name:fn,last_name:ln,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null,has_insurance:insurance};
   let studentId=sid.value||null, q;
   if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
   else q=await c.from('students').insert(payload).select('id').single();
