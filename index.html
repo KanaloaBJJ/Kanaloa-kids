@@ -115,9 +115,7 @@ header .brand-head h1{margin:0}
 <style>.v13-history-teacher{font-size:13px;color:#4b5563;margin:5px 0 10px}.v13-teacher-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700}.v13-history-section{margin-top:18px}</style>
 <script id="adult-filter-v139">
 window.getAdultStudents=function(rows){
-  return (rows||[]).filter(function(x){
-    return x.student_type==='kids';
-  });
+  return rows||[];
 };
 </script>
 <style id="kids-belt-fix">#v10-belts .v10-choice{background:#fff!important;color:#111827!important;border:2px solid #d1d5db!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:normal!important;text-align:center!important;min-height:46px!important}#v10-belts .v10-choice:nth-child(1){background:#fff!important;color:#111827!important}#v10-belts .v10-choice:nth-child(2),#v10-belts .v10-choice:nth-child(3),#v10-belts .v10-choice:nth-child(4){background:#d1d5db!important;color:#111827!important}#v10-belts .v10-choice:nth-child(5),#v10-belts .v10-choice:nth-child(6),#v10-belts .v10-choice:nth-child(7){background:#facc15!important;color:#111827!important}#v10-belts .v10-choice:nth-child(8),#v10-belts .v10-choice:nth-child(9),#v10-belts .v10-choice:nth-child(10){background:#fb923c!important;color:#111827!important}#v10-belts .v10-choice:nth-child(11),#v10-belts .v10-choice:nth-child(12),#v10-belts .v10-choice:nth-child(13){background:#4ade80!important;color:#111827!important}#v10-belts .v10-choice.selected{outline:3px solid #111827!important;color:#111827!important}</style></head><body class="v8-auth-pending"><div id="v8-auth-overlay"><div id="v8-auth-card">
@@ -171,7 +169,7 @@ function showConfig(){showAuth();$("authmsg").textContent="Configura primero sup
 async function login(){let {error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||""}
 async function signup(){let {error}=await sb.auth.signUp({email:$("email").value.trim(),password:$("password").value});$("authmsg").textContent=error?.message||"Cuenta creada. Revisa el correo si se solicita verificación."}
 async function load(){let [s,a,r,x,ct]=await Promise.all([
- sb.from("students").select("*").eq("active",true).order("name"),
+ sb.from("students").select("id,name,birth_date,phone,belt,grade,photo").order("name"),
  sb.from("attendance").select("*"),
  sb.from("belt_rules").select("*"),
  sb.from("app_settings").select("*").eq("id",1).maybeSingle(),
@@ -418,8 +416,8 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
  form.addEventListener('submit',async e=>{
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
-  const fn=first.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
-  const payload={student_type:'kids',name:fn,belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
+  const fn=first.value.trim(), ln=last.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
+  const payload={name:(fn+' '+ln).trim(),belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
   let studentId=sid.value||null, q;
   if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
   else q=await c.from('students').insert(payload).select('id').single();
@@ -435,13 +433,14 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
     reader.onload=async()=>{
       const uq=await c.from('students').update({photo:reader.result}).eq('id',studentId);
       if(uq.error){err.textContent='El alumno se guardó, pero no se pudo guardar la foto: '+uq.error.message;return}
-      close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+      close(); await load(); render();
     };
     reader.readAsDataURL(file);
   } else {
-    close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
+    close(); await load(); render();
   }
 
+  close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
  });;
 
  document.getElementById('v10-delete').addEventListener('click',async function(e){
