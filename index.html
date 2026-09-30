@@ -180,8 +180,13 @@ async function load(){let [s,a,r,x,ct]=await Promise.all([
 if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation")){
  throw Error(ct.error.message);
 }let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
-  for(const st of students){ st.photo_url=st.photo||null; }
-
+  for(const st of students){
+    st.photo_url=null;
+    if(st.photo){
+      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo,3600);
+      if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
+    }
+  }
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
 function t(b){return rules[b]||[30,30,30,30,30]}function total(id){return (att||[]).filter(a=>String(a.student_id)===String(id) && !(v13GetSession(a.date,a.slot)?.teacher_id!=null && String(v13GetSession(a.date,a.slot).teacher_id)===String(id))).length}function last(id){return att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).map(a=>a.date).sort().at(-1)||null}
 function prog(s){
@@ -418,7 +423,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   e.preventDefault(); err.textContent='';
   const c=window.sb||sb||window.bjjSupabaseClient;if(!c){err.textContent='No hay conexión con Supabase.';return}
   const fn=first.value.trim(), ln=last.value.trim(); if(!fn){err.textContent='Escribe el nombre.';return}
-  const payload={name:(fn+' '+ln).trim(),belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null};
+  const payload={student_type:'kids',name:(fn+' '+ln).trim(),belt,grade,birth_date:document.getElementById('v11-birth-date').value||null,phone:document.getElementById('v11-phone').value.trim()||null,active:true};
   let studentId=sid.value||null, q;
   if(studentId) q=await c.from('students').update(payload).eq('id',studentId);
   else q=await c.from('students').insert(payload).select('id').single();
@@ -435,7 +440,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
     if(photoPath && photoPath!==path) await c.storage.from('student-photos').remove([photoPath]);
     const up=await c.storage.from('student-photos').upload(path,file,{upsert:true,contentType:file.type});
     if(up.error){err.textContent='El alumno se guardó, pero no se pudo subir la foto: '+up.error.message;return}
-    const uq=await c.from('students').update({photo_path:path}).eq('id',studentId);
+    const uq=await c.from('students').update({photo:path}).eq('id',studentId);
     if(uq.error){err.textContent='La foto se subió, pero no se pudo guardar su referencia.';return}
   }
 
