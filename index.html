@@ -182,8 +182,8 @@ if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation"))
 }let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
   for(const st of students){
     st.photo_url=null;
-    if(st.photo){
-      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo,3600);
+    if(st.photo_path){
+      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo_path,3600);
       if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
     }
   }
@@ -400,7 +400,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   last.value=s?.last_name||((s?.name||'').split(' ').slice(1).join(' '));
   document.getElementById('v11-birth-date').value=s?.birth_date||'';
   document.getElementById('v11-phone').value=s?.phone||'';
-  photoPath=s?.photo||null;
+  photoPath=s?.photo_path||null;
   photoInput.value='';
   photoPreview.innerHTML=s?.photo_url?`<img class="v12-photo-lg" src="${s.photo_url}" alt="">`:'👤';
   belt=s?.belt||'Blanco'; grade=Number(s?.grade??0);
@@ -440,7 +440,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
     if(photoPath && photoPath!==path) await c.storage.from('student-photos').remove([photoPath]);
     const up=await c.storage.from('student-photos').upload(path,file,{upsert:true,contentType:file.type});
     if(up.error){err.textContent='El alumno se guardó, pero no se pudo subir la foto: '+up.error.message;return}
-    const uq=await c.from('students').update({photo:path}).eq('id',studentId);
+    const uq=await c.from('students').update({photo_path:path}).eq('id',studentId);
     if(uq.error){err.textContent='La foto se subió, pero no se pudo guardar su referencia.';return}
   }
 
