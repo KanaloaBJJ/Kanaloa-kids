@@ -290,8 +290,8 @@ async function studentHistory(id){let s=students.find(x=>x.id===id);let rows=att
  $("history").innerHTML=`<div class="card">
    <button class="secondary" onclick="render()">← Volver</button>
    <h2>Clase · ${d}</h2>
-${section("minis","🥋 MINIS")}
-${section("juniors","🥋 JUNIORS")}
+  ${section("minis","🥋 MINIS")}
+  ${section("juniors","🥋 JUNIORS")}
  </div>`;
 }
 async function toggle(id){
