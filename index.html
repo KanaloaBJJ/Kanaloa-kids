@@ -273,27 +273,75 @@ function card(s){
 }
 function v13TeacherNameFor(dateValue,slotValue){const cs=v13GetSession(dateValue,slotValue);return cs?.teacher_id?students.find(s=>String(s.id)===String(cs.teacher_id))?.name||"Profesor":null}
 function v13TeacherClasses(id){return (classSessions||[]).filter(x=>String(x.teacher_id)===String(id)).sort((a,b)=>b.date.localeCompare(a.date))}
-async function studentHistory(id){let s=students.find(x=>x.id===id);let rows=att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).sort((a,b)=>b.date.localeCompare(a.date));let taught=v13TeacherClasses(id);$("students").innerHTML=`<div class="card"><button class="secondary" onclick="render()">← Volver</button><div class="v12-photo-row">${s.photo_url?`<img class="v12-photo-lg" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo-lg v12-photo-placeholder">👤</span>`}<div><h2>${esc(s.name)}</h2><p>${s.belt} · grado ${s.grade}</p></div></div><h3>Historial de asistencias (${rows.length})</h3>${rows.map(a=>`<div class="student"><span><b>${a.date}</b><br><span class="small">${a.slot==="minis"?"🥋 MINIS":"🥋 JUNIORS"}${v13TeacherNameFor(a.date,a.slot)?` · 👨‍🏫 ${esc(v13TeacherNameFor(a.date,a.slot))}`:""}</span></span></div>`).join("")||"<p class='muted'>Sin asistencias.</p>"}<div class="v13-history-section"><h3>👨‍🏫 Clases impartidas como profesor (${taught.length})</h3>${taught.map(c=>`<div class="student" style="cursor:pointer" onclick="classHistory('${c.date}')"><span><b>${c.date}</b><br><span class="small">${c.slot==="minis"?"🥋 MINIS":"🥋 JUNIORS"}</span></span><span class="v13-teacher-pill">👨‍🏫 Profesor</span></div>`).join("")||"<p class='muted'>No ha impartido clases como profesor.</p>"}</div></div>`}
- function classHistory(d){
-    let rows=att.filter(a=>a.date===d);
- let names=id=>students.find(s=>s.id===id)?.name||"Alumno";
- let teacherFor=sl=>{
-   const x=v13GetSession(d,sl);
-   return x?.teacher_id ? students.find(s=>String(s.id)===String(x.teacher_id))?.name||"Profesor" : null;
- };
- let section=(sl,label)=>{
-   let r=rows.filter(a=>a.slot===sl);
-   let t=teacherFor(sl);
-   return `<h3>${label}</h3>
-     <div class="v13-history-teacher">👨‍🏫 Profesor: <b>${t?esc(t):"Sin profesor asignado"}</b></div>
-     ${r.map(a=>`<div class="student"><b>${esc(names(a.student_id))}</b></div>`).join("")||"<p class='muted'>Sin alumnos.</p>"}`;
- };
- $("history").innerHTML=`<div class="card">
-   <button class="secondary" onclick="render()">← Volver</button>
-   <h2>Clase · ${d}</h2>
-  ${section("minis","🥋 MINIS")}
-  ${section("juniors","🥋 JUNIORS")}
- </div>`;
+async function studentHistory(id){
+  let s=students.find(x=>x.id===id);
+  let rows=att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).sort((a,b)=>b.date.localeCompare(a.date));
+  let taught=v13TeacherClasses(id);
+
+  $("students").innerHTML=`<div class="card">
+    <button class="secondary" onclick="render()">← Volver</button>
+    <div class="v12-photo-row">
+      ${s.photo_url?`<img class="v12-photo-lg" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo-lg v12-photo-placeholder">👤</span>`}
+      <div>
+        <h2>${esc(s.name)}</h2>
+        <p>${s.belt} · grado ${s.grade}</p>
+      </div>
+    </div>
+
+    <h3>Historial de asistencias (${rows.length})</h3>
+    ${rows.map(a=>`<div class="student">
+      <span>
+        <b>${a.date}</b><br>
+        <span class="small">
+          ${a.slot==="minis"?"🥋 MINIS":"🥋 JUNIORS"}
+          ${v13TeacherNameFor(a.date,a.slot)?` · 👨‍🏫 ${esc(v13TeacherNameFor(a.date,a.slot))}`:""}
+        </span>
+      </span>
+    </div>`).join("")||"<p class='muted'>Sin asistencias.</p>"}
+
+    <div class="v13-history-section">
+      <h3>👨‍🏫 Clases impartidas como profesor (${taught.length})</h3>
+      ${taught.map(c=>`<div class="student" style="cursor:pointer" onclick="classHistory('${c.date}')">
+        <span>
+          <b>${c.date}</b><br>
+          <span class="small">${c.slot==="minis"?"🥋 MINIS":"🥋 JUNIORS"}</span>
+        </span>
+        <span class="v13-teacher-pill">👨‍🏫 Profesor</span>
+      </div>`).join("")||"<p class='muted'>No ha impartido clases como profesor.</p>"}
+    </div>
+  </div>`;
+}
+
+function classHistory(d){
+  let rows=att.filter(a=>a.date===d);
+  let names=id=>students.find(s=>s.id===id)?.name||"Alumno";
+
+  let teacherFor=sl=>{
+    const x=v13GetSession(d,sl);
+    return x?.teacher_id
+      ? students.find(s=>String(s.id)===String(x.teacher_id))?.name||"Profesor"
+      : null;
+  };
+
+  let section=(sl,label)=>{
+    let r=rows.filter(a=>a.slot===sl);
+    let t=teacherFor(sl);
+
+    return `<h3>${label}</h3>
+      <div class="v13-history-teacher">
+        👨‍🏫 Profesor: <b>${t?esc(t):"Sin profesor asignado"}</b>
+      </div>
+      ${r.map(a=>`<div class="student">
+        <b>${esc(names(a.student_id))}</b>
+      </div>`).join("")||"<p class='muted'>Sin alumnos.</p>"}`;
+  };
+
+  $("history").innerHTML=`<div class="card">
+    <button class="secondary" onclick="render()">← Volver</button>
+    <h2>Clase · ${d}</h2>
+    ${section("minis","🥋 MINIS")}
+    ${section("juniors","🥋 JUNIORS")}
+  </div>`;
 }
 async function toggle(id){
   if(v13GetSession(date,slot)?.teacher_id===id){
