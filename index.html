@@ -198,7 +198,14 @@ function prog(s){
 function days(d){return d?Math.floor((Date.now()-new Date(d+"T00:00:00"))/86400000):null}
 function setView(v){view=v;["dashboard","attendance","students","history"].forEach(x=>$(x).classList.toggle("hidden",x!==v));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.v===v));render()}
 function updateSessionButtons(){
- let m=document.getElementById("btn-morning"), a=document.getElementById("btn-afternoon");
+function updateSessionButtons(){
+  let m=document.getElementById("btn-minis"), a=document.getElementById("btn-juniors");
+  if(!m||!a)return;
+  m.classList.toggle("session-active",slot==="minis");
+  m.classList.toggle("session-inactive",slot!=="minis");
+  a.classList.toggle("session-active",slot==="juniors");
+  a.classList.toggle("session-inactive",slot!=="juniors");
+}
  if(!m||!a)return;
  m.classList.toggle("session-active",slot==="morning");
  m.classList.toggle("session-inactive",slot!=="morning");
