@@ -262,7 +262,7 @@ function render(){
  $("attendance").innerHTML=`${v13TeacherBlock()}<div class="card"><h2>Pasar lista</h2><label>Fecha</label><input id="ad" type="date" value="${date}"><label>Sesión</label><div class="row"><button id="btn-minis" class="session-btn" onclick="slot='minis';render()">🥋 MINIS</button>
 <button id="btn-juniors" class="session-btn" onclick="slot='juniors';render()">🥋 JUNIORS</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="toggle('${s.id}')">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
  $("students").innerHTML=`<div class="card"><div class="row between"><h2>Alumnos</h2><button onclick="addStudent()">+ Añadir</button></div><input id="search" placeholder="Buscar..."><div id="sl">${students.map(card).join("")}</div></div>`;$("search").oninput=e=>$("sl").innerHTML=students.filter(s=>s.name.toLowerCase().includes(e.target.value.toLowerCase())).map(card).join("");
- let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🌅 ${by[d].filter(a=>a.slot==="morning").length} · 🌇 ${by[d].filter(a=>a.slot==="afternoon").length}${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
+ let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🥋 ${by[d].filter(a=>a.slot==="minis").length} MINIS · 🥋 ${by[d].filter(a=>a.slot==="juniors").length} JUNIORS${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
  
 }
 function card(s){
@@ -290,8 +290,8 @@ async function studentHistory(id){let s=students.find(x=>x.id===id);let rows=att
  $("history").innerHTML=`<div class="card">
    <button class="secondary" onclick="render()">← Volver</button>
    <h2>Clase · ${d}</h2>
-   ${section("morning","🌅 Mañana")}
-   ${section("afternoon","🌇 Tarde")}
+${section("minis","🥋 MINIS")}
+${section("juniors","🥋 JUNIORS")}
  </div>`;
 }
 async function toggle(id){
