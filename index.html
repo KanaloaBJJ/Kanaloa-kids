@@ -222,10 +222,17 @@ async function v13SaveTeacher(){
  const existing=v13GetSession(date,slot);
  let q;
  if(existing){
-   q=await sb.from("class_sessions").update({teacher_id}).eq("id",existing.id);
- }else{
-   q=await sb.from("class_sessions").insert({date,slot,teacher_id});
- }
+  q=await sb.from("class_sessions")
+    .update({teacher_id: teacher_id || null})
+    .eq("id",existing.id);
+}else{
+  q=await sb.from("class_sessions")
+    .insert({
+      date: date,
+      slot: slot,
+      teacher_id: teacher_id || null
+    });
+}
  if(q.error){toast(q.error.message);return}
  classTeacherId=teacher_id;
  await load(); render();
