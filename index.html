@@ -179,12 +179,12 @@ if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation"))
  throw Error(ct.error.message);
 }let er=[s,a,r,x].find(q=>q.error);if(er)throw Error(er.error.message);students=window.getAdultStudents(s.data||[]);
   for(const st of students){
-    st.photo_url=null;
-    if(st.photo_path){
-      const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo_path,3600);
-      if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
-    }
+  st.photo_url=null;
+  if(st.photo_path){
+    const sr=await sb.storage.from("student-photos").createSignedUrl(st.photo_path,3600);
+    if(!sr.error)st.photo_url=sr.data?.signedUrl||null;
   }
+}
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
 function t(b){return rules[b]||[30,30,30,30,30]}function total(id){return (att||[]).filter(a=>String(a.student_id)===String(id) && !(v13GetSession(a.date,a.slot)?.teacher_id!=null && String(v13GetSession(a.date,a.slot).teacher_id)===String(id))).length}function last(id){return att.filter(a=>a.student_id===id && !(v13GetSession(a.date,a.slot)?.teacher_id===id)).map(a=>a.date).sort().at(-1)||null}
 function prog(s){
@@ -476,7 +476,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
   last.value=s?.last_name||((s?.name||'').split(' ').slice(1).join(' '));
   document.getElementById('v11-birth-date').value=s?.birth_date||'';
   document.getElementById('v11-phone').value=s?.phone||'';
-  photoPath=s?.photo_path||null;
+  photoPath=null;
   photoInput.value='';
   photoPreview.innerHTML=s?.photo_url?`<img class="v12-photo-lg" src="${s.photo_url}" alt="">`:'👤';
   belt=s?.belt||'Blanco'; grade=Number(s?.grade??0);
@@ -516,8 +516,16 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
     if(photoPath && photoPath!==path) await c.storage.from('student-photos').remove([photoPath]);
     const up=await c.storage.from('student-photos').upload(path,file,{upsert:true,contentType:file.type});
     if(up.error){err.textContent='El alumno se guardó, pero no se pudo subir la foto: '+up.error.message;return}
-    const uq=await c.from('students').update({photo_url:path}).eq('id',studentId);
-    if(uq.error){err.textContent='La foto se subió, pero no se pudo guardar su referencia.';return}
+    const publicUrl=c.storage.from('student-photos').getPublicUrl(path).data.publicUrl;
+
+const uq=await c.from('students')
+  .update({photo_url:publicUrl})
+  .eq('id',studentId);
+
+if(uq.error){
+  err.textContent='La foto se subió, pero no se pudo guardar su referencia: '+uq.error.message;
+  return;
+}
   }
 
   close(); if(typeof load==='function'){await load();} if(typeof render==='function'){render();}
