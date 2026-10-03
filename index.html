@@ -181,7 +181,26 @@ if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation"))
   for(const st of students){
     st.photo_url=st.photo_url||null;
     for(const st of students){
-  st.photo_url=st.photo_url||null;
+  if(st.photo_url){
+    let photoPath=st.photo_url;
+    const marker="/student-photos/";
+    
+    if(photoPath.includes(marker)){
+      photoPath=photoPath.split(marker)[1].split("?")[0];
+    }
+
+    const sr=await sb.storage
+      .from("student-photos")
+      .createSignedUrl(photoPath,3600);
+
+    if(!sr.error){
+      st.photo_url=sr.data?.signedUrl||null;
+    }else{
+      st.photo_url=null;
+    }
+  }else{
+    st.photo_url=null;
+  }
 }
   }
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
