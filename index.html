@@ -181,11 +181,7 @@ if(ct.error && !String(ct.error.message||"").toLowerCase().includes("relation"))
   for(const st of students){
     st.photo_url=st.photo_url||null;
     for(const st of students){
-  if(st.photo_url){
-    const fileName=st.photo_url.split('/').pop();
-    const sr=await sb.storage.from("student-photos").createSignedUrl(fileName,3600);
-    if(!sr.error) st.photo_url=sr.data?.signedUrl||null;
-  }
+  st.photo_url=st.photo_url||null;
 }
   }
   att=a.data||[];classSessions=ct?.data||[];rules={};(r.data||[]).forEach(q=>rules[q.belt]=[q.grade1,q.grade2,q.grade3,q.grade4,q.next_belt]);if(x.data)settings=x.data;$("sub").textContent=settings.academy_name+" · datos online"}
