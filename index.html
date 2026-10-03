@@ -534,7 +534,7 @@ if(document.readyState==="loading") document.addEventListener("DOMContentLoaded"
     if(photoPath && photoPath!==path) await c.storage.from('student-photos').remove([photoPath]);
     const up=await c.storage.from('student-photos').upload(path,file,{upsert:true,contentType:file.type});
     if(up.error){err.textContent='El alumno se guardó, pero no se pudo subir la foto: '+up.error.message;return}
-    const uq=await c.from('students').update({photo_path:path}).eq('id',studentId);
+    const uq=await c.from('students').update({photo_url:path}).eq('id',studentId);
     if(uq.error){err.textContent='La foto se subió, pero no se pudo guardar su referencia: '+uq.error.message;return}
   }
 
