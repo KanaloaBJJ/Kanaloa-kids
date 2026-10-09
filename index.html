@@ -394,7 +394,6 @@ async function toggle(id){
     return;
   }
 
-  // Actualizar solo la asistencia local, sin recargar toda la aplicación
   if(e){
     att=att.filter(a=>a.id!==e.id);
   }else if(q.data?.[0]){
@@ -408,7 +407,13 @@ async function toggle(id){
     });
   }
 
-  render();
+  const buttons=document.querySelectorAll('#attendance button');
+  buttons.forEach(btn=>{
+    if(btn.getAttribute('onclick')===`toggle('${id}')`){
+      btn.textContent=e?"Marcar":"✅ Presente";
+      btn.classList.toggle("secondary",!!e);
+    }
+  });
 }
 function addStudent(){ window.openV10StudentForm(null); }
 function edit(id){ let s=students.find(x=>x.id===id); window.openV10StudentForm(s); }
