@@ -285,7 +285,7 @@ function render(){
  $("dashboard").innerHTML=`<div class="grid"><div class="card"><div class="muted">Alumnos</div><div class="stat">${students.length}</div></div><div class="card"><div class="muted">Asistencias hoy</div><div class="stat">${att.filter(a=>a.date===new Date().toISOString().slice(0,10)).length}</div></div><div class="card"><div class="muted">Total sesiones</div><div class="stat">${att.length}</div></div></div><div id="v11-alerts"></div><div class="card"><h3>🚨 Avisos</h3>${students.map(s=>{let p=prog(s),d=days(last(s.id));return p.pct>=100||d>=settings.inactivity_days?`<div class="student"><span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span><span>${p.pct>=100?(p.isBelt?"🥋 Preparado para cinturón "+p.nextBelt:"Grado alcanzado"):d+" días sin venir"}</span></div>`:""}).join("")||"<p class='muted'>Sin avisos.</p>"}</div><div class="card"><button onclick="logout()">Cerrar sesión</button></div>`;
  v11RenderAlerts();
  $("attendance").innerHTML=`${v13TeacherBlock()}<div class="card"><h2>Pasar lista</h2><label>Fecha</label><input id="ad" type="date" value="${date}"><label>Sesión</label><div class="row"><button id="btn-minis" class="session-btn" onclick="slot='minis';render()">🥋 MINIS</button>
-<button id="btn-juniors" class="session-btn" onclick="slot='juniors';render()">🥋 JUNIORS</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="toggle('${s.id}',event)">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
+<button id="btn-juniors" class="session-btn" onclick="slot='juniors';render()">🥋 JUNIORS</button></div><p class="small muted">Marca mañana y tarde por separado. Ambas = 2 asistencias.</p></div><div class="card">${students.map(s=>{let ok=att.some(a=>a.student_id===s.id&&a.date===date&&a.slot===slot);return `<div class="student" style="cursor:pointer" onclick="studentHistory('${s.id}')"><span class="v12-photo-row">${s.photo_url?`<img class="v12-photo" src="${esc(s.photo_url)}" alt="">`:`<span class="v12-photo v12-photo-placeholder">👤</span>`}<span><b>${esc(s.name)}</b><br><span class="small">${s.belt} · grado ${s.grade}</span></span></span><button class="${ok?"secondary":""}" onclick="event.stopPropagation();toggle('${s.id}',this)">${ok?"✅ Presente":"Marcar"}</button></div>`}).join("")}</div>`;$("ad").onchange=e=>{date=e.target.value;render()};updateSessionButtons();
  $("students").innerHTML=`<div class="card"><div class="row between"><h2>Alumnos</h2><button onclick="addStudent()">+ Añadir</button></div><input id="search" placeholder="Buscar..."><div id="sl">${students.map(card).join("")}</div></div>`;$("search").oninput=e=>$("sl").innerHTML=students.filter(s=>s.name.toLowerCase().includes(e.target.value.toLowerCase())).map(card).join("");
  let by={};att.forEach(a=>(by[a.date]??=[]).push(a));$("history").innerHTML=`<div class="card"><h2>Historial</h2>${Object.keys(by).sort().reverse().map(d=>`<div class="student" style="cursor:pointer" onclick="classHistory('${d}')"><span><b>${d}</b><br><span class="small">🥋 ${by[d].filter(a=>a.slot==="minis").length} MINIS · 🥋 ${by[d].filter(a=>a.slot==="juniors").length} JUNIORS${v13TeacherNameFor(d,"morning")?` · 👨‍🏫 Mañana: ${esc(v13TeacherNameFor(d,"morning"))}`:""}${v13TeacherNameFor(d,"afternoon")?` · 👨‍🏫 Tarde: ${esc(v13TeacherNameFor(d,"afternoon"))}`:""}</span></span><b>${by[d].length}</b></div>`).join("")||"<p class='muted'>Sin datos.</p>"}</div>`;
  
@@ -368,13 +368,11 @@ function classHistory(d){
     ${section("juniors","🥋 JUNIORS")}
   </div>`;
 }
-async function toggle(id,event){
+async function toggle(id,btn){
   if(v13GetSession(date,slot)?.teacher_id===id){
     toast("El profesor de esta clase no cuenta como alumno.");
     return;
   }
-
-  if(event) event.stopPropagation();
 
   const e=att.find(a=>
     String(a.student_id)===String(id) &&
@@ -402,6 +400,8 @@ async function toggle(id,event){
 
   if(e){
     att=att.filter(a=>a.id!==e.id);
+    btn.textContent="Marcar";
+    btn.classList.add("secondary");
   }else{
     att.push(q.data?.[0]||{
       student_id:id,
@@ -409,11 +409,8 @@ async function toggle(id,event){
       present:true,
       slot
     });
-  }
-
-  if(event?.currentTarget){
-    event.currentTarget.textContent=e?"Marcar":"✅ Presente";
-    event.currentTarget.classList.toggle("secondary",!!e);
+    btn.textContent="✅ Presente";
+    btn.classList.remove("secondary");
   }
 }
 function addStudent(){ window.openV10StudentForm(null); }
