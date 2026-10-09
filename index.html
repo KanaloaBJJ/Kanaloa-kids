@@ -368,26 +368,32 @@ function classHistory(d){
     ${section("juniors","🥋 JUNIORS")}
   </div>`;
 }
-async function toggle(id){
+async function toggle(id,event){
   if(v13GetSession(date,slot)?.teacher_id===id){
     toast("El profesor de esta clase no cuenta como alumno.");
     return;
   }
 
-  let e=att.find(a=>
-    a.student_id===id &&
+  if(event) event.stopPropagation();
+
+  const e=att.find(a=>
+    String(a.student_id)===String(id) &&
     a.date===date &&
     a.slot===slot
   );
 
-  let q=e
-    ?await sb.from("attendance").delete().eq("id",e.id)
-    :await sb.from("attendance").insert({
-        student_id:id,
-        date,
-        present:true,
-        slot
-      });
+  let q;
+
+  if(e){
+    q=await sb.from("attendance").delete().eq("id",e.id);
+  }else{
+    q=await sb.from("attendance").insert({
+      student_id:id,
+      date,
+      present:true,
+      slot
+    });
+  }
 
   if(q.error){
     toast(q.error.message);
@@ -396,10 +402,8 @@ async function toggle(id){
 
   if(e){
     att=att.filter(a=>a.id!==e.id);
-  }else if(q.data?.[0]){
-    att.push(q.data[0]);
   }else{
-    att.push({
+    att.push(q.data?.[0]||{
       student_id:id,
       date,
       present:true,
@@ -407,13 +411,10 @@ async function toggle(id){
     });
   }
 
-  const buttons=document.querySelectorAll('#attendance button');
-  buttons.forEach(btn=>{
-    if(btn.getAttribute('onclick')===`toggle('${id}')`){
-      btn.textContent=e?"Marcar":"✅ Presente";
-      btn.classList.toggle("secondary",!!e);
-    }
-  });
+  if(event?.currentTarget){
+    event.currentTarget.textContent=e?"Marcar":"✅ Presente";
+    event.currentTarget.classList.toggle("secondary",!!e);
+  }
 }
 function addStudent(){ window.openV10StudentForm(null); }
 function edit(id){ let s=students.find(x=>x.id===id); window.openV10StudentForm(s); }
