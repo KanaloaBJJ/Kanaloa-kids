@@ -403,12 +403,9 @@ async function toggle(id,btn){
     btn.textContent="Marcar";
     btn.classList.add("secondary");
   }else{
-    att.push(q.data?.[0]||{
-      student_id:id,
-      date,
-      present:true,
-      slot
-    });
+    if(q.data){
+  att.push(q.data);
+}
     btn.textContent="✅ Presente";
     btn.classList.remove("secondary");
   }
