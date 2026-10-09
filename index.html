@@ -389,11 +389,26 @@ async function toggle(id){
         slot
       });
 
-  if(q.error) toast(q.error.message);
-  else{
-    await load();
-    render();
+  if(q.error){
+    toast(q.error.message);
+    return;
   }
+
+  // Actualizar solo la asistencia local, sin recargar toda la aplicación
+  if(e){
+    att=att.filter(a=>a.id!==e.id);
+  }else if(q.data?.[0]){
+    att.push(q.data[0]);
+  }else{
+    att.push({
+      student_id:id,
+      date,
+      present:true,
+      slot
+    });
+  }
+
+  render();
 }
 function addStudent(){ window.openV10StudentForm(null); }
 function edit(id){ let s=students.find(x=>x.id===id); window.openV10StudentForm(s); }
