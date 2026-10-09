@@ -386,11 +386,11 @@ async function toggle(id,btn){
     q=await sb.from("attendance").delete().eq("id",e.id);
   }else{
     q=await sb.from("attendance").insert({
-      student_id:id,
-      date,
-      present:true,
-      slot
-    });
+  student_id:id,
+  date,
+  present:true,
+  slot
+}).select().single();
   }
 
   if(q.error){
